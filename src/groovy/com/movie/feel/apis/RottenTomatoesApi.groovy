@@ -2,6 +2,7 @@ package com.movie.feel.apis
 
 import com.movie.feel.Movie
 import com.movie.feel.Review
+import com.movie.feel.helpers.Constants
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
 import grails.converters.JSON
@@ -67,6 +68,9 @@ class RottenTomatoesApi implements MovieSitesApi_I {
             movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
             movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
 
+            // Todo: should we automatically fetch them? I think we should
+            // automatically adds them to the movie as well
+            // getReviewsForMovie(movie)
 
             movie.validate()
             if (!movie.hasErrors()) {
@@ -99,16 +103,19 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
             Review review = new Review(jsonReview)
             // date is initially String, have to parse it to Date
-            // review.date = Extras.formatDate(jsonReview?.get("date"), Constants.RottenTomatoesApi)
+            // review.date = Extras.formatDate(jsonReview?.get("date"), Constants.RottenTomatoes)
             // JUST WON'T WORK
             // TODO: fix the DATE PROBLEM
-
+            review.movie = movie
             review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
-
+            review.source = Constants.RottenTomatoes
 
             review.validate()
             if (!review.hasErrors()) {
+
                 movie.addToReviews(review)
+                movie.validate()
+                movie.save(flush: true)
                 reviews.add(review)
             }
         }

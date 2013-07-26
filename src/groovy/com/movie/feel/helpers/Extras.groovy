@@ -35,7 +35,7 @@ class Extras {
 
     static Date formatDate(String date, String source) {
         if(date)
-        if (source == Constants.RottenTomatoesApi) {
+        if (source == Constants.RottenTomatoes) {
             def dateParser = new java.text.SimpleDateFormat("yyyy-mm-dd")
             return dateParser.parse(date)
         }

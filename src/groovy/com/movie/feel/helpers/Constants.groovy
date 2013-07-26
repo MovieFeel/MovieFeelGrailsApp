@@ -9,6 +9,6 @@ package com.movie.feel.helpers
  */
 class Constants {
 
-    public static final String RottenTomatoesApi = "RottenTomatoesApi"
-    public static final String IMDBApi = "IMDBApi"
+    public static final String RottenTomatoes = "Rotten Tomatoes"
+    public static final String IMDB = "IMDB"
 }
