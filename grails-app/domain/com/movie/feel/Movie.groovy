@@ -16,7 +16,10 @@ class Movie {
     String ratings
     String posters
 
+    static hasMany = [reviews: Review]
+
     static constraints = {
+        reviews lazy: false
         rottenTomatoId nullable: true
         imdbId nullable: true
         ratings nullable: true
@@ -29,6 +32,10 @@ class Movie {
         ratings(size: 1..2000)
         posters(size: 1..2000)
         synopsis(size: 1..2000)
+    }
+
+    static mapping = {
+        reviews lazy: false, cascade: "all,delete-orphan"
     }
 
 }

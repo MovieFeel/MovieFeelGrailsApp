@@ -1,6 +1,7 @@
 package com.movie.feel.interfaces
 
 import com.movie.feel.Movie
+import com.movie.feel.Review
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,4 +14,5 @@ interface MovieSitesApi_I {
 
     List<Movie> searchForMovieByTitle(String title)
 
+    List<Review> getReviewsForMovie(Movie movie)
 }

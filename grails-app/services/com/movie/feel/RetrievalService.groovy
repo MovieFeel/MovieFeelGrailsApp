@@ -1,13 +1,7 @@
 package com.movie.feel
 
-import com.google.gson.GsonBuilder
-import com.movie.feel.apis.RottenTomatoesApi
+import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
-import org.apache.http.HttpResponse
-import org.apache.http.client.methods.HttpGet
-import org.apache.http.impl.client.DefaultHttpClient
-import com.google.gson.Gson
-import grails.converters.*;
 
 class RetrievalService {
 
@@ -16,15 +10,33 @@ class RetrievalService {
 
     List<Movie> searchForMovie(String title) {
 
-        String[] titles = title.split(' ')
-        String urlTitle = ""
-        for (int i = 0; i < titles.length - 1; i++) {
-            urlTitle += titles[i] + "+"
+        def urlTitle = Extras.formatTitle(title)
+
+        def rottenTomatoMovies = rottenTomatoesApi.searchForMovieByTitle(urlTitle)
+
+        return rottenTomatoMovies
+    }
+
+    List<Review> getReviewsForMovie(String title) {
+
+        List<Movie> movies = Movie.findAllByTitleLike(title);
+
+        // by convention, choose first in list, maybe implements something else to let the user decide which one to choose.
+
+        List<Review> rottenTomatoReviews = null;
+
+        // the search should be done with some auto-completion involved
+        // in order to facilitate database search
+        if (movies.size() > 0)
+            rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(movies.get(0))
+        // no movies found with that title in the database
+        else {
+            def freshMovies = searchForMovie(title)
+            if (movies.size() > 0)
+                rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(movies.get(0))
         }
-        urlTitle += titles[titles.length - 1]
 
-        def rottenTomatoMovie = rottenTomatoesApi.searchForMovieByTitle(urlTitle)
 
-        return rottenTomatoMovie
+        return rottenTomatoReviews
     }
 }

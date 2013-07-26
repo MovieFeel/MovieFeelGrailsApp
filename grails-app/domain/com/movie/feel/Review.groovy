@@ -3,14 +3,19 @@ package com.movie.feel
 class Review {
 
     String critic
-    Date date
+    String date
+    String quote
     String freshness
     String publication
-    String quote
+        String original_score
     // actually hash map
     String links
 
     static constraints = {
+        freshness nullable: true
+        publication nullable: true
+        original_score nullable: true
+        links nullable: true
     }
 
 }
