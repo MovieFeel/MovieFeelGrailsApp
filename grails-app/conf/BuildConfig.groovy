@@ -40,11 +40,18 @@ grails.project.dependency.resolution = {
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
-
+        build 'org.apache.httpcomponents:httpcore:4.1.2'
+        build 'org.apache.httpcomponents:httpclient:4.1.2'
+        runtime 'org.apache.httpcomponents:httpcore:4.1.2'
+        runtime 'org.apache.httpcomponents:httpclient:4.1.2'
         // runtime 'mysql:mysql-connector-java:5.1.22'
+
     }
 
     plugins {
+
+        compile ":gson:1.1.4"
+
         runtime ":hibernate:$grailsVersion"
         runtime ":jquery:1.8.3"
         runtime ":resources:1.2"
@@ -59,5 +66,6 @@ grails.project.dependency.resolution = {
         runtime ":database-migration:1.3.2"
 
         compile ':cache:1.0.1'
+
     }
 }
