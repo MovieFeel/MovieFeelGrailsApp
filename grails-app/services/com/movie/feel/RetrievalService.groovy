@@ -29,7 +29,7 @@ class RetrievalService {
         // in order to facilitate database search
         if (movies.size() > 0) {
 
-            // Todo: find some  logic here
+            // Todo: find some logic here
             if (movies.get(0).reviews?.size() > 0) {
                 return movies.get(0).reviews.asList()
             } else
@@ -39,8 +39,9 @@ class RetrievalService {
         // no movies found with that title in the database
         else {
             def freshMovies = searchForMovie(title)
-            if (movies.size() > 0)
-                rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(movies.get(0))
+            if (freshMovies.size() > 0)
+            // Todo: if we automatically get the reviews when getting the movie we may want to do check if it already has reviews and return them.
+                rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(freshMovies.get(0))
         }
 
 

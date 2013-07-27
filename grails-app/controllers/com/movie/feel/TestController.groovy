@@ -1,23 +1,20 @@
 package com.movie.feel
 
-import grails.converters.JSON
-
 class TestController {
 
     def retrievalService
 
     def index() {
 
-        retrievalService.searchForMovie("Toy Story 3")
-        redirect(action: "simpleSearch")
-        // render retrievalService.getReviewsForMovie("Toy Story 3") as JSON
+        render view: "index", model: [results: null, searchValue: ""]
 
     }
 
-    def simpleSearch() {
+    def simpleSearch(String searchValue) {
 
+        def results = retrievalService.getReviewsForMovie(searchValue)
 
-        render(view: "SimpleSearch")
+        render view: "index", model: [results: results, searchValue: searchValue]
     }
 
 }
