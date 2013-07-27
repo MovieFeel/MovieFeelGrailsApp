@@ -73,6 +73,9 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
             ta.run()
             tb.run()
+
+            // wait for all the threads to latch down
+            // (semaphore)
             latch.await()
         }
         println("Threads time: ")

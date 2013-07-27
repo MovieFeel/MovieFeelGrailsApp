@@ -27,6 +27,7 @@ class MovieParser extends Thread {
 
     @Override
     void run() {
+        // does exactly what the code below the Threads in RottenTomatoesApi does.
         JSONObject jsonMovie;
         for (int i = 0; i < jsonMovies.size(); i++) {
             jsonMovie = jsonMovies.get(i)
