@@ -16,6 +16,10 @@ class Movie {
     String ratings
     String posters
 
+    // Todo: think of better name
+    // Todo: we're gonna have a 'feelings' enum, right?
+    String generalFeeling
+
     static hasMany = [reviews: Review]
 
     static constraints = {
@@ -32,6 +36,8 @@ class Movie {
         ratings(size: 1..2000)
         posters(size: 1..2000)
         synopsis(size: 1..2000)
+        // for now
+        generalFeeling nullable: true
     }
 
     static mapping = {

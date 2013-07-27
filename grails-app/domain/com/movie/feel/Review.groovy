@@ -14,7 +14,7 @@ class Review {
     // actually hash map
     String links
 
-    static belongsTo = [movie : Movie]
+    static belongsTo = [movie: Movie]
 
     static constraints = {
         // place 'Anonymous' in case it is not available
@@ -25,6 +25,8 @@ class Review {
         publication nullable: true
         original_score nullable: true
         links nullable: true
+        links(size: 1..2000)
+        quote(size: 1..2000)
     }
 
 }

@@ -5,12 +5,15 @@ import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
+import com.movie.feel.threads.rottentomatoes.MovieParser
 import grails.converters.JSON
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
 import org.codehaus.groovy.grails.web.json.JSONElement
 import org.codehaus.groovy.grails.web.json.JSONObject
+
+import java.util.concurrent.CountDownLatch
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,6 +56,29 @@ class RottenTomatoesApi implements MovieSitesApi_I {
         def jsonResponse = doRequest(URL)
 
         def jsonMovies = jsonResponse.movies
+
+        long initTime = System.currentTimeMillis()
+        List<Movie> moviez
+        if (jsonMovies.size() > 5) {
+            // lets try with 2 threads... split in half
+            // Todo: dynamically create threads with regards to the "moviePageLimit" paramenter, split them and test for values: 10,15,20,25,30,35,40,45,50 <-- movies/request
+            CountDownLatch latch = new CountDownLatch(2);
+            moviez = Collections.synchronizedList(new ArrayList<Movie>());
+
+            def a = jsonMovies.collate(5).get(0)
+            def b = jsonMovies.collate(5).get(1)
+
+            Thread ta = new MovieParser(a, latch, moviez)
+            Thread tb = new MovieParser(b, latch, moviez)
+
+            ta.run()
+            tb.run()
+            latch.await()
+        }
+        println("Threads time: ")
+        println(System.currentTimeMillis() - initTime)
+
+        initTime = System.currentTimeMillis()
         JSONObject jsonMovie;
         for (int i = 0; i < jsonMovies.size(); i++) {
             jsonMovie = jsonMovies.getJSONObject(i)
@@ -78,6 +104,9 @@ class RottenTomatoesApi implements MovieSitesApi_I {
                 movies.add(movie)
             }
         }
+
+        println("No threads time: ")
+        println(System.currentTimeMillis() - initTime)
 
         return movies
     }

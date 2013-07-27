@@ -5,7 +5,7 @@ beans = {
 
     retrievalService(com.movie.feel.RetrievalService) {
 
-        rottenTomatoesApi = RottenTomatoesApi.getInstance("apikey=hwwmxfuufhtukd3y8s4vwncu", 10, 50)
+        rottenTomatoesApi = RottenTomatoesApi.getInstance("apikey=hwwmxfuufhtukd3y8s4vwncu", 50, 50)
     }
 
 }

@@ -18,23 +18,21 @@ class RetrievalService {
     }
 
     List<Review> getReviewsForMovie(String title) {
-
-        List<Movie> movies = Movie.findAllByTitleLike(title);
-
-        // by convention, choose first in list, maybe implements something else to let the user decide which one to choose.
-
         List<Review> rottenTomatoReviews = null;
 
+        //The (?i) makes the match ignore case.
+        List<Movie> movies = Movie.list().findAll {
+            it.title ==~ /(?i).*${title}.*/
+        }
+        // by convention, choose first in list, maybe implements something else to let the user decide which one to choose.
         // the search should be done with some auto-completion involved
         // in order to facilitate database search
         if (movies.size() > 0) {
-
             // Todo: find some logic here
             if (movies.get(0).reviews?.size() > 0) {
                 return movies.get(0).reviews.asList()
             } else
                 rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(movies.get(0))
-
         }
         // no movies found with that title in the database
         else {
