@@ -26,6 +26,7 @@ class ImdbApi implements MovieSitesApi_I {
     private ImdbApi(int pageLimit, String plotType) {
         this.pageLimit = pageLimit
         this.plotType = plotType
+        this.httpclient = new DefaultHttpClient()
     }
 
     public static ImdbApi getInstance(int pageLimit, String plotType) {
