@@ -42,7 +42,6 @@ class RetrievalService {
                 rottenTomatoReviews = rottenTomatoesApi.getReviewsForMovie(freshMovies.get(0))
         }
 
-
         return rottenTomatoReviews
     }
 

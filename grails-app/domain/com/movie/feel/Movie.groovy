@@ -15,6 +15,7 @@ class Movie {
     String release_dates
     String ratings
     String posters
+    ArrayList<String> extendedRuntimes
 
     // Todo: think of better name
     // Todo: we're gonna have a 'feelings' enum, right?
@@ -24,6 +25,8 @@ class Movie {
 
     static constraints = {
         reviews lazy: false
+        runtime nullable: true
+        mpaa_rating nullable: true
         rottenTomatoId nullable: true
         imdbId nullable: true
         ratings nullable: true
@@ -36,6 +39,7 @@ class Movie {
         ratings(size: 1..2000)
         posters(size: 1..2000)
         synopsis(size: 1..2000)
+
         // for now
         generalFeeling nullable: true
     }

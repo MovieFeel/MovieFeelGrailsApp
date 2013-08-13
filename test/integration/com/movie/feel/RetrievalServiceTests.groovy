@@ -52,7 +52,8 @@ class RetrievalServiceTests {
     }
 
     @Test
-    void testImdbMovieRetrieval(){
+    void testImdbMovieRetrieval() {
         def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
+        assertTrue(lordOfTheRingsResults.size() == 10)
     }
 }
