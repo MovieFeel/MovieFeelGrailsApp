@@ -1,5 +1,6 @@
 import com.movie.feel.apis.ImdbApi
 import com.movie.feel.apis.RottenTomatoesApi
+import com.movie.feel.helpers.Constants
 
 // Place your Spring DSL code here
 beans = {
@@ -7,7 +8,7 @@ beans = {
     retrievalService(com.movie.feel.RetrievalService) {
 
         rottenTomatoesApi = RottenTomatoesApi.getInstance("apikey=hwwmxfuufhtukd3y8s4vwncu", 50, 50)
-        imdbApi = ImdbApi.getInstance(10, "full")
+        imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, "full")
 
     }
 

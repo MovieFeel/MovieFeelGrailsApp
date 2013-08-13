@@ -59,25 +59,25 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         long initTime = System.currentTimeMillis()
         List<Movie> moviez
-        if (jsonMovies.size() > 5) {
-            // lets try with 2 threads... split in half
-            // Todo: dynamically create threads with regards to the "moviePageLimit" paramenter, split them and test for values: 10,15,20,25,30,35,40,45,50 <-- movies/request
-            CountDownLatch latch = new CountDownLatch(2);
-            moviez = Collections.synchronizedList(new ArrayList<Movie>());
+        int numberOfThreads = jsonMovies.size()/Constants.RottenTomatoesThreadSplitFactor
+        CountDownLatch latch = new CountDownLatch(numberOfThreads)
+        moviez = Collections.synchronizedList(new ArrayList<Movie>())
 
-            def a = jsonMovies.collate(5).get(0)
-            def b = jsonMovies.collate(5).get(1)
-
-            Thread ta = new MovieParser(a, latch, moviez)
-            Thread tb = new MovieParser(b, latch, moviez)
-
-            ta.run()
-            tb.run()
-
-            // wait for all the threads to latch down
-            // (semaphore)
-            latch.await()
+        for(int i=0;i<numberOfThreads;i++)
+        {
+            def currentCollection = jsonMovies.collate(Constants.RottenTomatoesThreadSplitFactor).get(i)
+            Thread currentThread = new MovieParser(currentCollection, latch, moviez)
+            currentThread.run()
         }
+
+        latch.await()
+
+        println("Moviez size")
+        println(jsonMovies.size())
+
+        println("Number of threads:")
+        println(numberOfThreads)
+
         println("Threads time: ")
         println(System.currentTimeMillis() - initTime)
 
