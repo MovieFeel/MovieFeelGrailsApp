@@ -6,7 +6,7 @@ import com.movie.feel.interfaces.MovieSitesApi_I
 class RetrievalService {
 
     MovieSitesApi_I rottenTomatoesApi
-    MovieSitesApi_I someOtherApi
+    MovieSitesApi_I imdbApi
 
     List<Movie> searchForMovie(String title) {
 
@@ -44,5 +44,15 @@ class RetrievalService {
 
 
         return rottenTomatoReviews
+    }
+
+    // TEMPORARY
+    List<Movie> searchForImdbMovie(String title) {
+        def urlTitle = Extras.formatTitle(title)
+
+        def imdbMovies = imdbApi.searchForMovieByTitle(urlTitle)
+
+        return imdbMovies
+
     }
 }

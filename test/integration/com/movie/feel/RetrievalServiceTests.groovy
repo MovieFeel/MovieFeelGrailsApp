@@ -22,13 +22,13 @@ class RetrievalServiceTests {
     }
 
     @Test
-    void testMovieRetrieval() {
+    void testRottenTomatoesMovieRetrieval() {
         def toyStoryResults = retrievalService.searchForMovie("Toy Story 3")
         def lordOfTheRingsResults = retrievalService.searchForMovie("Lord of the Rings")
         def universalSoldierResults = retrievalService.searchForMovie("Universal Soldier")
 
         assertTrue(toyStoryResults.size() == 1)
-        assertTrue(lordOfTheRingsResults.size() == 10)
+        assertTrue(lordOfTheRingsResults.size() == 15)
         assertTrue(universalSoldierResults.size() == 7)
 
         assertTrue(toyStoryResults.get(0).title == "Toy Story 3")
@@ -43,11 +43,16 @@ class RetrievalServiceTests {
     }
 
     @Test
-    void testReviewRetrieval() {
+    void testRottenTomatoesReviewRetrieval() {
         def toyStoryMovies = retrievalService.searchForMovie("Toy Story 3")
         def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
 
-        assertTrue(toyStoryReviews.size() == 46)
+        assertTrue(toyStoryReviews.size() == 49)
 
+    }
+
+    @Test
+    void testImdbMovieRetrieval(){
+        def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
     }
 }
