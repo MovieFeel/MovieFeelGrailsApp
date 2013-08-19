@@ -58,39 +58,35 @@ class RottenTomatoesApi implements MovieSitesApi_I {
     List<Movie> searchForMovieByTitle(String title) {
         String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + title + "&page_limit=" + moviePageLimit
 
-        List<Movie> movies = new ArrayList<Movie>()
-
         def jsonResponse = doRequest(URL)
 
         def jsonMovies = jsonResponse.movies
 
         long initTime = System.currentTimeMillis()
-        List<Movie> moviez
-        if(jsonMovies)
-        {
-            int numberOfThreads = jsonMovies.size()/Constants.RottenTomatoesThreadSplitFactor
-            CountDownLatch latch = new CountDownLatch(numberOfThreads)
-            moviez = Collections.synchronizedList(new ArrayList<Movie>())
+        List<Movie> movies = Collections.synchronizedList(new ArrayList<Movie>())
+        if (jsonMovies) {
+            int numberOfThreads, collateSize
 
-            for(int i=0;i<numberOfThreads;i++)
-            {
-                def currentCollection = jsonMovies.collate(Constants.RottenTomatoesThreadSplitFactor).get(i)
-                Thread currentThread = new MovieParser(currentCollection, latch, moviez)
+            if (jsonMovies.size() < Constants.RottenTomatoesThreadSplitFactor*2) {
+                numberOfThreads = 1
+                collateSize = jsonMovies.size()
+            } else {
+                numberOfThreads = jsonMovies.size() / Constants.RottenTomatoesThreadSplitFactor
+                collateSize = Constants.RottenTomatoesThreadSplitFactor
+            }
+            CountDownLatch latch = new CountDownLatch(numberOfThreads)
+
+            for (int i = 0; i < numberOfThreads; i++) {
+                def currentCollection = jsonMovies.collate(collateSize).get(i)
+                Thread currentThread = new MovieParser(currentCollection, latch, movies)
                 currentThread.run()
             }
 
             latch.await()
 
-            println("Moviez size")
-            println(jsonMovies.size())
-
-            println("Number of threads:")
-            println(numberOfThreads)
-
             println("Threads time: ")
             println(System.currentTimeMillis() - initTime)
-        }
-        else println("No movies found")
+        } else println("No movies found")
         return movies
     }
 
@@ -110,13 +106,12 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         def jsonReviews = jsonResponse.reviews
         JSONObject jsonReview;
-        if(jsonReviews)
-        {
+        if (jsonReviews) {
             for (int i = 0; i < jsonReviews.size(); i++) {
                 jsonReview = jsonReviews.getJSONObject(i)
 
                 Review review = new Review(jsonReview)
-                review.date = Extras.formatDate(jsonReview?.get("date"), Constants.RottenTomatoes)
+                review.date = Extras.formatDate(jsonReview?.get("date").toString(), Constants.RottenTomatoes)
                 review.movie = movie
                 review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
                 review.source = Constants.RottenTomatoes
