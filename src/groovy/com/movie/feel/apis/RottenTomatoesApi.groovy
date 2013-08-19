@@ -46,6 +46,13 @@ class RottenTomatoesApi implements MovieSitesApi_I {
         return rottenTomatoesApi
     }
 
+    static RottenTomatoesApi getInstance() {
+        if (rottenTomatoesApi == null)
+            RottenTomatoesApi.getInstance("apikey=hwwmxfuufhtukd3y8s4vwncu", 50, 50)
+
+        return rottenTomatoesApi
+    }
+
 
     @Override
     List<Movie> searchForMovieByTitle(String title) {
@@ -59,58 +66,31 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         long initTime = System.currentTimeMillis()
         List<Movie> moviez
-        int numberOfThreads = jsonMovies.size()/Constants.RottenTomatoesThreadSplitFactor
-        CountDownLatch latch = new CountDownLatch(numberOfThreads)
-        moviez = Collections.synchronizedList(new ArrayList<Movie>())
-
-        for(int i=0;i<numberOfThreads;i++)
+        if(jsonMovies)
         {
-            def currentCollection = jsonMovies.collate(Constants.RottenTomatoesThreadSplitFactor).get(i)
-            Thread currentThread = new MovieParser(currentCollection, latch, moviez)
-            currentThread.run()
-        }
+            int numberOfThreads = jsonMovies.size()/Constants.RottenTomatoesThreadSplitFactor
+            CountDownLatch latch = new CountDownLatch(numberOfThreads)
+            moviez = Collections.synchronizedList(new ArrayList<Movie>())
 
-        latch.await()
-
-        println("Moviez size")
-        println(jsonMovies.size())
-
-        println("Number of threads:")
-        println(numberOfThreads)
-
-        println("Threads time: ")
-        println(System.currentTimeMillis() - initTime)
-
-        initTime = System.currentTimeMillis()
-        JSONObject jsonMovie;
-        for (int i = 0; i < jsonMovies.size(); i++) {
-            jsonMovie = jsonMovies.getJSONObject(i)
-
-            // automatically finds and fills the fields by their names
-            // hint: will have to construct map out of it for IMDB, for example,
-            // if the fields are not the same <=> normalize
-            Movie movie = new Movie(jsonMovie)
-            movie.rottenTomatoId = jsonMovie?.get("id")
-            // these have to be explicit for some reason
-
-            movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
-            movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
-            movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
-
-            // Todo: should we automatically fetch them? I think we should
-            // automatically adds them to the movie as well
-            // getReviewsForMovie(movie)
-
-            movie.validate()
-            if (!movie.hasErrors()) {
-                movie.save()
-                movies.add(movie)
+            for(int i=0;i<numberOfThreads;i++)
+            {
+                def currentCollection = jsonMovies.collate(Constants.RottenTomatoesThreadSplitFactor).get(i)
+                Thread currentThread = new MovieParser(currentCollection, latch, moviez)
+                currentThread.run()
             }
+
+            latch.await()
+
+            println("Moviez size")
+            println(jsonMovies.size())
+
+            println("Number of threads:")
+            println(numberOfThreads)
+
+            println("Threads time: ")
+            println(System.currentTimeMillis() - initTime)
         }
-
-        println("No threads time: ")
-        println(System.currentTimeMillis() - initTime)
-
+        else println("No movies found")
         return movies
     }
 
@@ -130,25 +110,25 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         def jsonReviews = jsonResponse.reviews
         JSONObject jsonReview;
-        for (int i = 0; i < jsonReviews.size(); i++) {
-            jsonReview = jsonReviews.getJSONObject(i)
+        if(jsonReviews)
+        {
+            for (int i = 0; i < jsonReviews.size(); i++) {
+                jsonReview = jsonReviews.getJSONObject(i)
 
-            Review review = new Review(jsonReview)
-            // date is initially String, have to parse it to Date
-            // review.date = Extras.formatDate(jsonReview?.get("date"), Constants.RottenTomatoes)
-            // JUST WON'T WORK
-            // TODO: fix the DATE PROBLEM
-            review.movie = movie
-            review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
-            review.source = Constants.RottenTomatoes
+                Review review = new Review(jsonReview)
+                review.date = Extras.formatDate(jsonReview?.get("date"), Constants.RottenTomatoes)
+                review.movie = movie
+                review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
+                review.source = Constants.RottenTomatoes
 
-            review.validate()
-            if (!review.hasErrors()) {
+                review.validate()
+                if (!review.hasErrors()) {
 
-                movie.addToReviews(review)
-                movie.validate()
-                movie.save(flush: true)
-                reviews.add(review)
+                    movie.addToReviews(review)
+                    movie.validate()
+                    movie.save(flush: true)
+                    reviews.add(review)
+                }
             }
         }
         return reviews

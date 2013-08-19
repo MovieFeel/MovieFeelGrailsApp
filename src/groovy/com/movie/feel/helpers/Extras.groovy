@@ -1,5 +1,7 @@
 package com.movie.feel.helpers
 
+import java.text.SimpleDateFormat
+
 /**
  * Created with IntelliJ IDEA.
  * User: alexcosma
@@ -36,8 +38,7 @@ class Extras {
     static Date formatDate(String date, String source) {
         if(date)
         if (source == Constants.RottenTomatoes) {
-            def dateParser = new java.text.SimpleDateFormat("yyyy-mm-dd")
-            return dateParser.parse(date)
+            return new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH).parse(date);
         }
         return null;
     }

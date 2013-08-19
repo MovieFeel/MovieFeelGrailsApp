@@ -1,6 +1,7 @@
 package com.movie.feel.threads.rottentomatoes
 
 import com.movie.feel.Movie
+import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Extras
 import org.codehaus.groovy.grails.web.json.JSONObject
 
@@ -43,9 +44,8 @@ class MovieParser extends Thread {
             movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
             movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
 
-            // Todo: should we automatically fetch them? I think we should
             // automatically adds them to the movie as well
-            // getReviewsForMovie(movie)
+             RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
 
             movie.validate()
             if (!movie.hasErrors()) {
