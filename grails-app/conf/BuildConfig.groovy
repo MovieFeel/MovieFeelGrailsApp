@@ -40,7 +40,9 @@ grails.project.dependency.resolution = {
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
-        build 'org.apache.httpcomponents:httpcore:4.1.2'
+        compile (group: 'uk.ac.gate', name:'gate-core', version: '6.0') {
+        }
+    build 'org.apache.httpcomponents:httpcore:4.1.2'
         build 'org.apache.httpcomponents:httpclient:4.1.2'
         runtime 'org.apache.httpcomponents:httpcore:4.1.2'
         runtime 'org.apache.httpcomponents:httpclient:4.1.2'
