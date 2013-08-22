@@ -1,12 +1,6 @@
 package com.movie.feel
 
-import gate.Corpus;
-import gate.CorpusController;
-import gate.Document;
-import gate.Factory;
-import gate.Utils;
-import gate.creole.ExecutionException;
-import gate.creole.ResourceInstantiationException;
+import com.movie.feel.services.GateService;
 
 class TestController {
 
@@ -14,7 +8,7 @@ class TestController {
 
     def index() {
 
-        render view: "index", model: [results: null, searchValue: ""]
+        render view: "index", model: [results: null, searchValue: "", inputGate: "", outputGate: ""]
 
     }
 
@@ -23,5 +17,11 @@ class TestController {
         def results = retrievalService.getReviewsForMovie(searchValue)
 
         render view: "index", model: [results: results, searchValue: searchValue]
+    }
+
+    def gateTest(String inputGate) {
+        def outputGate = new GateService().testGate(inputGate);
+
+        render view: "index", model: [ inputGate: inputGate, outputGate: outputGate]
     }
 }

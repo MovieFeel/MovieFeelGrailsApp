@@ -3,7 +3,10 @@
        xmlns:gate="http://gate.ac.uk/ns/spring"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      http://gate.ac.uk/ns/spring
+      http://gate.ac.uk/ns/spring.xsd">
 
 	<bean id="grailsApplication" class="org.codehaus.groovy.grails.commons.GrailsApplicationFactoryBean">
 		<description>Grails application factory bean</description>
@@ -41,8 +44,5 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
      </gate:preload-plugins>
      </gate:init>
 
-     <gate:duplicate id="myApp" return-template="true">
-     <gate:saved-application location="/WEB-INF/gate-files/application.xgapp" />
-     </gate:duplicate>
 
 </beans>

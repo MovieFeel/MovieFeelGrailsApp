@@ -19,6 +19,11 @@
 
     <g:actionSubmit value="Submit" action="simpleSearch"/>
 
+    <g:textArea name="inputGate" value="${inputGate}" rows="10" cols="40"/>
+
+    <g:actionSubmit value="Submit" action="gateTest"/>
+
+    ${outputGate}
 
     <g:if test="${results}">
 
