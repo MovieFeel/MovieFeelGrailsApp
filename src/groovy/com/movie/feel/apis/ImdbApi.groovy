@@ -2,6 +2,7 @@ package com.movie.feel.apis
 
 import com.movie.feel.Movie
 import com.movie.feel.Review
+import com.movie.feel.helpers.Constants
 import com.movie.feel.interfaces.MovieSitesApi_I
 import grails.converters.JSON
 import org.apache.http.HttpResponse
@@ -34,6 +35,12 @@ class ImdbApi implements MovieSitesApi_I {
     public static ImdbApi getInstance(int pageLimit, String plotType) {
         if (imdbApi == null)
             imdbApi = new ImdbApi(pageLimit, plotType)
+        return imdbApi
+    }
+
+    public static ImdbApi getInstance(){
+        if(imdbApi==null)
+            imdbApi = new ImdbApi(Constants.RottenTomatoesMoviePageLimit, "full")
         return imdbApi
     }
 

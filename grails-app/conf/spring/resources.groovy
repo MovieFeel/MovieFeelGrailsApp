@@ -12,4 +12,9 @@ beans = {
 
     }
 
+    MovieRetrieverStage(com.movie.feel.pipeline.MovieRetrieverStage){
+        rottenTomatoesApi = RottenTomatoesApi.getInstance("apikey=hwwmxfuufhtukd3y8s4vwncu", 50, 50)
+        imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, "full")
+    }
+
 }

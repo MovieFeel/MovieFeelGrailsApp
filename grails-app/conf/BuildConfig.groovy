@@ -40,13 +40,13 @@ grails.project.dependency.resolution = {
 
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
-        compile (group: 'uk.ac.gate', name:'gate-core', version: '7.1') {
-        }
+
         build 'org.apache.httpcomponents:httpcore:4.1.2'
         build 'org.apache.httpcomponents:httpclient:4.1.2'
         runtime 'org.apache.httpcomponents:httpcore:4.1.2'
         runtime 'org.apache.httpcomponents:httpclient:4.1.2'
-
+        compile (group: 'uk.ac.gate', name:'gate-core', version: '7.1') {
+        }
         // runtime 'mysql:mysql-connector-java:5.1.22'
 
     }

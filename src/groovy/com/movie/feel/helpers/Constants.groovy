@@ -13,4 +13,6 @@ class Constants {
     public static final String IMDB = "IMDB"
     public static final int RottenTomatoesMoviePageLimit = 100;
     public static final int RottenTomatoesThreadSplitFactor = 5;
+
+    public static final int NUMBER_OF_APIS = 2;
 }
