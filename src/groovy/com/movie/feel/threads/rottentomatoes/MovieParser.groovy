@@ -45,13 +45,13 @@ class MovieParser extends Thread {
             movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
 
             // automatically adds them to the movie as well
-             RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
+            RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
 
-            movie.validate()
-            if (!movie.hasErrors()) {
-                movie.save()
-                movies.add(movie)
-            }
+//            movie.validate()
+//            if (!movie.hasErrors()) {
+//                movie.save()
+               movies.add(movie)
+//            }
         }
         latch.countDown();
     }

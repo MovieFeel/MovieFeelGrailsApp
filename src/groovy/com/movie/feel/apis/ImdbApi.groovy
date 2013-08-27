@@ -94,11 +94,14 @@ class ImdbApi implements MovieSitesApi_I {
             }
 
             // can someone explain why I have to do this?
-            m.validate()
-            if (m.validate()) {
-                m.save()
-                movies.add(m)
-            }
+//            m.validate()
+//            if (m.validate()) {
+//                m.save()
+              movies.add(m)
+//            }
+
+            //TODO: saves and validations done in the pipeline stages
+            //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
         }
 
         return movies

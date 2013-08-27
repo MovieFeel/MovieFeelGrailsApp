@@ -116,14 +116,14 @@ class RottenTomatoesApi implements MovieSitesApi_I {
                 review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
                 review.source = Constants.RottenTomatoes
 
-                review.validate()
-                if (!review.hasErrors()) {
-
-                    movie.addToReviews(review)
-                    movie.validate()
-                    movie.save(flush: true)
-                    reviews.add(review)
-                }
+//                review.validate()
+//                if (!review.hasErrors()) {
+//
+//                    movie.addToReviews(review)
+//                    movie.validate()
+//                    movie.save(flush: true)
+                   reviews.add(review)
+//                }
             }
         }
         return reviews

@@ -1,6 +1,8 @@
 package com.movie.feel.pipeline
 
 import com.movie.feel.Movie
+import com.movie.feel.apis.ImdbApi
+import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
 import com.movie.feel.interfaces.MovieSitesApi_I
 import com.movie.feel.interfaces.pipeline.MovieRetrieverStage_I
@@ -20,13 +22,17 @@ class MovieRetrieverStage implements MovieRetrieverStage_I {
     MovieSitesApi_I imdbApi
 
     @Override
+    void init() {
+        rottenTomatoesApi = RottenTomatoesApi.getInstance(Constants.RottenTomatoesApiKey, Constants.RottenTomatoesMoviePageLimit, Constants.RottenTomatoesReviewPageLimit)
+        imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, Constants.IMDB_PLOT_TYPE)
+    }
+
+    @Override
     List<Movie> startStage(String title) {
 
         def imdbMovies = new ArrayList<Movie>()
         def rottenTomatoesMovies = new ArrayList<Movie>()
         def latch = new CountDownLatch(Constants.NUMBER_OF_APIS)
-
-        latch.await()
 
         Thread imdbThread = new Thread() {
             public void run() {
@@ -59,7 +65,6 @@ class MovieRetrieverStage implements MovieRetrieverStage_I {
     }
 
     // TODO: should these 2 be overriden, or non-existent in the interface?
-
     @Override
     void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
         outputList = imdbApi.searchForMovieByTitle(title)
