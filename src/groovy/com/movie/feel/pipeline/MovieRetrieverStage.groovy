@@ -5,6 +5,8 @@ import com.movie.feel.apis.ImdbApi
 import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
 import com.movie.feel.interfaces.MovieSitesApi_I
+import com.movie.feel.interfaces.observer.Observer_I
+import com.movie.feel.interfaces.observer.Subject_I
 import com.movie.feel.interfaces.pipeline.MovieRetrieverStage_I
 
 import java.util.concurrent.CountDownLatch
@@ -16,16 +18,7 @@ import java.util.concurrent.CountDownLatch
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class MovieRetrieverStage implements MovieRetrieverStage_I {
-
-    MovieSitesApi_I rottenTomatoesApi
-    MovieSitesApi_I imdbApi
-
-    @Override
-    void init() {
-        rottenTomatoesApi = RottenTomatoesApi.getInstance(Constants.RottenTomatoesApiKey, Constants.RottenTomatoesMoviePageLimit, Constants.RottenTomatoesReviewPageLimit)
-        imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, Constants.IMDB_PLOT_TYPE)
-    }
+class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I, Subject_I {
 
     @Override
     List<Movie> startStage(String title) {
@@ -54,7 +47,7 @@ class MovieRetrieverStage implements MovieRetrieverStage_I {
         // we should now have both lists of movies
 
 
-        return synchronizeResults(imdbMovies, rottenTomatoesMovies)  //To change body of implemented methods use File | Settings | File Templates.
+        return synchronizeResults(imdbMovies, rottenTomatoesMovies)
     }
 
     @Override
@@ -77,5 +70,20 @@ class MovieRetrieverStage implements MovieRetrieverStage_I {
         latch.countDown()
     }
 
+    @Override
+    void addObserver(Observer_I o) {
+        observers.add(o)
+    }
 
+    @Override
+    void removeObserver(Observer_I o) {
+        observers.remove(o)
+    }
+
+    @Override
+    void notifyObservers() {
+        for (Observer_I o : observers) {
+            o.update(this)
+        }
+    }
 }
