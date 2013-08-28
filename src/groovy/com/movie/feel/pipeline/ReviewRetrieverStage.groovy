@@ -1,5 +1,7 @@
 package com.movie.feel.pipeline
 
+import com.movie.feel.interfaces.pipeline.ReviewRetrieverStage_I
+
 /**
  * Created with IntelliJ IDEA.
  * User: Alex
@@ -7,5 +9,5 @@ package com.movie.feel.pipeline
  * Time: 9:12 PM
  * To change this template use File | Settings | File Templates.
  */
-class ReviewRetrieverStage extends AbstractStage {
+class ReviewRetrieverStage extends AbstractStage implements ReviewRetrieverStage_I {
 }
