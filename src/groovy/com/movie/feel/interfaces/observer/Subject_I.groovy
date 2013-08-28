@@ -17,6 +17,6 @@ public interface Subject_I {
 
     public void setStatus(String status)
 
-    public void notifyObservers()
+    public void notifyObserversWithCurrentStatus()
 
 }

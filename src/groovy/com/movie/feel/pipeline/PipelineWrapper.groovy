@@ -28,6 +28,12 @@ class PipelineWrapper implements Observer_I {
 
     public void startPipeline(String title) {
         this.state = Constants.STATE_IDLE
+        // initializer for the observer
+        Iterator<Map.Entry<String, AbstractStage>> stageIterator = stages.iterator()
+        while (stageIterator.hasNext()) {
+            AbstractStage stage = stageIterator.next().getValue()
+            stage.addObserver(this)
+        }
     }
 
 
@@ -46,6 +52,7 @@ class PipelineWrapper implements Observer_I {
                 setState(Constants.STATE_MOVIE_RET)
                 stages[Constants.STAGE_SEARCH].doSomething()
 
+
                 break;
 
             case Constants.STATE_MOVIE_RET:
@@ -54,6 +61,8 @@ class PipelineWrapper implements Observer_I {
                 resetStatus()
                 setState(Constants.STATE_REVIEW_RET)
                 stages[Constants.STAGE_MOVIE_RET].doSomething()
+
+                ((MovieRetrieverStage) stages[Constants.STAGE_MOVIE_RET]).startStage("Lord+of+the+Rings")
 
                 break;
 
@@ -98,7 +107,7 @@ class PipelineWrapper implements Observer_I {
     }
 
     String getStatus() {
-        return this.state
+        return this.status
     }
 
     @Override

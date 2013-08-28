@@ -24,6 +24,9 @@ class Constants {
 
     // Pipeline Stages Status
     public static final String STATUS_EMPTY = "PIPELINE_STAGE_STATUS_EMPTY"
+    public static final String STATUS_RETRIEVER_STAGE_SUCCESS = "PIPELINE_RETRIEVER_STAGE_SUCESS"
+    public static final String STATUS_RETRIEVER_STAGE_FAIL = "PIPELINE_RETRIEVER_STAGE_FAIL"
+    // etc
 
     // Pipeline stages
     public static final String STAGE_SEARCH = "PIPELINE_STAGE_SEARCH"

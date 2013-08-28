@@ -18,7 +18,7 @@ import java.util.concurrent.CountDownLatch
  * Time: 9:09 PM
  * To change this template use File | Settings | File Templates.
  */
-class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I, Subject_I {
+class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I {
 
     @Override
     List<Movie> startStage(String title) {
@@ -53,37 +53,22 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
     @Override
     List<Movie> synchronizeResults(List<Movie>... movies) {
         //TODO: somehow synchronize the lists
-
+        status = Constants.STATUS_RETRIEVER_STAGE_SUCCESS
+        notifyObserversWithCurrentStatus()
         return null
     }
 
     // TODO: should these 2 be overriden, or non-existent in the interface?
     @Override
     void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
-        outputList = imdbApi.searchForMovieByTitle(title)
+      //  outputList = imdbApi.searchForMovieByTitle(title)
         latch.countDown()
     }
 
     @Override
     void getRottenTomatoesMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
-        outputList = rottenTomatoesApi.searchForMovieByTitle(title)
+        // outputList = rottenTomatoesApi.searchForMovieByTitle(title)
         latch.countDown()
     }
 
-    @Override
-    void addObserver(Observer_I o) {
-        observers.add(o)
-    }
-
-    @Override
-    void removeObserver(Observer_I o) {
-        observers.remove(o)
-    }
-
-    @Override
-    void notifyObservers() {
-        for (Observer_I o : observers) {
-            o.update(this)
-        }
-    }
 }

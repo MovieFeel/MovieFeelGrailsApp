@@ -5,6 +5,7 @@ import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
 import com.movie.feel.interfaces.MovieSitesApi_I
 import com.movie.feel.interfaces.observer.Observer_I
+import com.movie.feel.interfaces.observer.Subject_I
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +14,7 @@ import com.movie.feel.interfaces.observer.Observer_I
  * Time: 12:15 PM
  * To change this template use File | Settings | File Templates.
  */
-class AbstractStage {
+class AbstractStage implements Subject_I {
 
     List<Observer_I> observers
     MovieSitesApi_I rottenTomatoesApi
@@ -35,4 +36,22 @@ class AbstractStage {
     void doSomething() {
 
     }
+
+    @Override
+    void addObserver(Observer_I o) {
+        observers.add(o)
+    }
+
+    @Override
+    void removeObserver(Observer_I o) {
+        observers.remove(o)
+    }
+
+    @Override
+    void notifyObserversWithCurrentStatus() {
+        for (Observer_I o : observers) {
+            o.update(this)
+        }
+    }
 }
+

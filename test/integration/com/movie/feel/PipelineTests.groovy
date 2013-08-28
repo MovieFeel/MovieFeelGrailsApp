@@ -54,6 +54,23 @@ class PipelineTests {
     }
 
     @Test
+    void initialTestStatus() {
+        PipelineWrapper pipeline = new PipelineWrapper()
+        pipeline.startPipeline("Test")
+        pipeline.startPipeline("Test")
+        assertTrue(pipeline.getState() == Constants.STATE_IDLE)
+
+        pipeline.nextState()
+        assertTrue(pipeline.getState() == Constants.STATE_SEARCH)
+
+        pipeline.nextState()
+        assertTrue(pipeline.getState() == Constants.STATE_MOVIE_RET)
+
+        pipeline.nextState()
+        assertTrue(pipeline.getStatus() == Constants.STATUS_RETRIEVER_STAGE_SUCCESS)
+    }
+
+    @Test
     void testFirstStage() {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()
