@@ -114,17 +114,20 @@ class ImdbApi implements MovieSitesApi_I {
         return movies
     }
 
+    //TODO Find the optimal number of threads(Darius)
+
     List<Review> getReviewsForMovie(Movie movie) {
         def reviewsNumber = getReviewsNumberUsingScrapping(movie)
 
-        int numberOfThreads = reviewsNumber / 1000
+        int numberOfThreads = 2
+        int halfReviews = reviewsNumber / 2
 
         long initTime = System.currentTimeMillis()
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
-        for (int i = 0; i < reviewsNumber-999; i+=1000) {
-            Thread currentThread = new MovieScrapper(latch,movie,i,1000)
+        for (int i = 0; i < reviewsNumber; i+=halfReviews) {
+            Thread currentThread = new MovieScrapper(latch,movie,i,halfReviews)
             currentThread.run()
         }
 
