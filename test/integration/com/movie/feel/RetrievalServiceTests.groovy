@@ -47,13 +47,21 @@ class RetrievalServiceTests {
         def toyStoryMovies = retrievalService.searchForMovie("Toy Story 3")
         def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
 
-        assertTrue(toyStoryReviews.size() == 49)
+        assertTrue(toyStoryReviews.size() > 0)
 
     }
 
     @Test
     void testImdbMovieRetrieval() {
         def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
-        assertTrue(lordOfTheRingsResults.size() == 10)
+        assertTrue(lordOfTheRingsResults.size() > 0)
+    }
+
+    @Test
+    void testImdbMovieReviewRetrieval() {
+        def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
+        //def reviews = retrievalService.getImdbMovieReviews(lordOfTheRingsResults[0])
+        def reviews = retrievalService.getReviewsForMovieImdb("Lord of the Rings")
+        assert(reviews.size() > 0)
     }
 }

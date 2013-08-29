@@ -4,6 +4,7 @@ import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
 import com.movie.feel.interfaces.MovieSitesApi_I
+import com.movie.feel.threads.imdb.MovieScrapper
 import grails.converters.JSON
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpGet
@@ -11,6 +12,12 @@ import org.apache.http.impl.client.DefaultHttpClient
 import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONElement
 import org.codehaus.groovy.grails.web.json.JSONObject
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element
+import java.util.*;
+import java.text.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created with IntelliJ IDEA.
@@ -107,9 +114,42 @@ class ImdbApi implements MovieSitesApi_I {
         return movies
     }
 
-    @Override
     List<Review> getReviewsForMovie(Movie movie) {
-        return null  //To change body of implemented methods use File | Settings | File Templates.
+        def reviewsNumber = getReviewsNumberUsingScrapping(movie)
+
+        int numberOfThreads = reviewsNumber / 1000
+
+        long initTime = System.currentTimeMillis()
+
+        CountDownLatch latch = new CountDownLatch(numberOfThreads)
+
+        for (int i = 0; i < reviewsNumber-999; i+=1000) {
+            Thread currentThread = new MovieScrapper(latch,movie,i,1000)
+            currentThread.run()
+        }
+
+
+        latch.await()
+
+        println("Imdb Review Retrieval Threads time: ")
+        println(System.currentTimeMillis() - initTime)
+
+        return movie.reviews.asList()
+    }
+
+
+    //TODO: Make the dude include it in the api
+    int getReviewsNumberUsingScrapping(Movie movie)
+    {
+        String url = " http://www.imdb.com/title/" + movie.imdbId
+        Document doc = Jsoup.connect(url)
+                .userAgent("Mozilla").timeout(600000).get()
+
+        Element reviewsNumberElement = doc.select(".star-box-details > br + a > span").first()
+        def reviewsNumberString = reviewsNumberElement.ownText().split()[0]
+        NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
+        Long parsedReviewsNumber = (Long) format.parse(reviewsNumberString);
+        return parsedReviewsNumber.toInteger()
     }
 
     JSONElement doRequest(String url) {

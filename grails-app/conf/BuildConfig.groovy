@@ -47,6 +47,8 @@ grails.project.dependency.resolution = {
         runtime 'org.apache.httpcomponents:httpclient:4.1.2'
         compile (group: 'uk.ac.gate', name:'gate-core', version: '7.1') {
         }
+        compile (group: 'org.jsoup', name:'jsoup', version: '1.7.2') {
+        }
         // runtime 'mysql:mysql-connector-java:5.1.22'
 
     }
