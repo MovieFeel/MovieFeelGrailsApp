@@ -36,12 +36,17 @@ class Constants {
     public static final String STAGE_MOVIE_RET = "PIPELINE_STAGE_MOVIE_RET"
     public static final String STAGE_REVIEW_RET = "PIPELINE_STAGE_REVIEW_RET"
     public static final String STAGE_REVIEW_PROC = "PIPELINE_STAGE_REVIEW_PROC"
+    //TODO lock the access to the database ? or sincronize somehow
+    public static final String STAGE_REVIEW_WRITE = "PIPELINE_STAGE_REVIEW_WRITE"
+    public static final String STAGE_REVIEW_RESPONSE = "PIPELINE_STAGE_REVIEW_RESPONSE"
 
     // Pipeline states
     public static final String STATE_IDLE = "PIPELINE_STATE_IDLE"
+    public static final String STATE_INIT = "PIPELINE_STATE_INIT"
     public static final String STATE_SEARCH = "PIPELINE_STATE_SEARCH"
     public static final String STATE_MOVIE_RET = "PIPELINE_STATE_MOVIE_RET"
     public static final String STATE_REVIEW_RET = "PIPELINE_STATE_REVIEW_RET"
     public static final String STATE_REVIEW_PROC = "PIPELINE_STATE_REVIEW_PROC"
-
+    public static final String STATE_REVIEW_WRITE = "PIPELINE_STATE_REVIEW_WRITE"
+    public static final String STATE_REVIEW_RESPONSE = "PIPELINE_STATE_REVIEW_RESPONSE"
 }

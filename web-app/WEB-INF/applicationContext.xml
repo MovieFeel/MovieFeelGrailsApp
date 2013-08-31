@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:gate="http://gate.ac.uk/ns/spring"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
-      http://www.springframework.org/schema/beans
-      http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-      http://gate.ac.uk/ns/spring
-      http://gate.ac.uk/ns/spring.xsd">
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<bean id="grailsApplication" class="org.codehaus.groovy.grails.commons.GrailsApplicationFactoryBean">
 		<description>Grails application factory bean</description>
@@ -34,15 +30,4 @@
 			<value>utf-8</value>
 		</property>
 	</bean>
-
-    <gate:init gate-home="/WEB-INF/gate-files/"
-     plugins-home="/WEB-INF/gate-files/plugins"
-     site-config-file="/WEB-INF/gate-files/gate.xml"
-     user-config-file="/WEB-INF/gate-files/user-gate.xml">
-     <gate:preload-plugins>
-     <value>/WEB-INF/gate-files/plugins/ANNIE</value>
-     </gate:preload-plugins>
-     </gate:init>
-
-
 </beans>

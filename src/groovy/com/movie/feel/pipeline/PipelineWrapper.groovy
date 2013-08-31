@@ -23,11 +23,13 @@ class PipelineWrapper implements Observer_I {
         stages[Constants.STAGE_MOVIE_RET] = new MovieRetrieverStage()
         stages[Constants.STAGE_REVIEW_RET] = new ReviewRetrieverStage()
         stages[Constants.STAGE_REVIEW_PROC] = new ReviewProcessingStage()
+        stages[Constants.STAGE_REVIEW_WRITE] = new ReviewWritingStage()
+        stages[Constants.STAGE_REVIEW_RESPONSE] = new ReviewResponseStage()
     }
 
     // results which will be set from the stages
-    List<Movie> movies;
-    List<Review> reviews;
+    List<Movie> movies
+    List<Review> reviews
 
     String state
     String status
@@ -36,13 +38,16 @@ class PipelineWrapper implements Observer_I {
     String title
 
     public void startPipeline(String title) {
-        this.state = Constants.STATE_IDLE
-        this.title = Extras.formatTitle(title)
-        // initializer for the observer
-        Iterator<Map.Entry<String, AbstractStage>> stageIterator = stages.iterator()
-        while (stageIterator.hasNext()) {
-            AbstractStage stage = stageIterator.next().getValue()
-            stage.addObserver(this)
+        if(this.state.contentEquals(Constants.STATE_IDLE))
+        {
+            this.state = Constants.STATE_INIT
+            this.title = Extras.formatTitle(title)
+            // initializer for the observer
+            Iterator<Map.Entry<String, AbstractStage>> stageIterator = stages.iterator()
+            while (stageIterator.hasNext()) {
+                AbstractStage stage = stageIterator.next().getValue()
+                stage.addObserver(this)
+            }
         }
     }
 
@@ -50,6 +55,12 @@ class PipelineWrapper implements Observer_I {
     public void nextState() {
         switch (state) {
             case Constants.STATE_IDLE:
+
+                setState(Constants.STATE_INIT)
+
+                break;
+
+            case Constants.STATE_INIT:
 
                 setState(Constants.STATE_SEARCH)
                 ((SearchStage)stages[Constants.STAGE_SEARCH]).searchForMovieByTitle(title)
@@ -91,8 +102,22 @@ class PipelineWrapper implements Observer_I {
                 sendNotificationForStatus()
                 resetStatus()
                 setState(Constants.STATE_IDLE)
-                stages[Constants.STAGE_REVIEW_PROC].doSomething()
+                stages[Constants.STAGE_REVIEW_WRITE].doSomething()
 
+                break;
+
+            case Constants.STATE_REVIEW_WRITE:
+
+                sendNotificationForStatus()
+                resetStatus()
+                setState(Constants.STATE_REVIEW_RESPONSE)
+                break;
+
+            case Constants.STAGE_REVIEW_RESPONSE:
+
+                sendNotificationForStatus()
+                resetStatus()
+                setState(Constants.STATE_IDLE)
                 break;
         }
     }
