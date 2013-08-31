@@ -12,6 +12,8 @@ import com.movie.feel.Review
  */
 interface MovieSitesApi_I {
 
+    HashMap<String, String> getAllMoviesTitlesLike(String title)
+
     List<Movie> searchForMovieByTitle(String title)
 
     List<Review> getReviewsForMovie(Movie movie)

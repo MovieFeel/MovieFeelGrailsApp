@@ -3,6 +3,7 @@ package com.movie.feel.pipeline
 import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
+import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.observer.Observer_I
 import com.movie.feel.interfaces.observer.Subject_I
@@ -27,19 +28,15 @@ class PipelineWrapper implements Observer_I {
         stages[Constants.STAGE_REVIEW_RESPONSE] = new ReviewResponseStage()
     }
 
-    // results which will be set from the stages
-    List<Movie> movies
-    List<Review> reviews
-
     String state
     String status
     def notificationService
 
     String title
 
+
     public void startPipeline(String title) {
-        if(this.state.contentEquals(Constants.STATE_IDLE))
-        {
+        if (this.state.contentEquals(Constants.STATE_IDLE)) {
             this.state = Constants.STATE_INIT
             this.title = Extras.formatTitle(title)
             // initializer for the observer
@@ -52,7 +49,7 @@ class PipelineWrapper implements Observer_I {
     }
 
 
-    public void nextState() {
+    public void executeState() {
         switch (state) {
             case Constants.STATE_IDLE:
 
@@ -63,7 +60,7 @@ class PipelineWrapper implements Observer_I {
             case Constants.STATE_INIT:
 
                 setState(Constants.STATE_SEARCH)
-                ((SearchStage)stages[Constants.STAGE_SEARCH]).searchForMovieByTitle(title)
+                ((SearchStage) stages[Constants.STAGE_SEARCH]).searchForMovieByTitle(title)
 
                 break;
 
@@ -146,14 +143,6 @@ class PipelineWrapper implements Observer_I {
         return this.status
     }
 
-    void setMovies(List<Movie> movies) {
-        this.movies = movies
-    }
-
-    void setReviews(List<Review> reviews) {
-        this.reviews = reviews
-    }
-
     @Override
     void update(Subject_I o) {
         status = o.getStatus()
@@ -161,11 +150,20 @@ class PipelineWrapper implements Observer_I {
 
         // TODO: do something! a stage has signaled its completion
 
-        if (status == Constants.STATUS_SEARCH_STAGE_FOUND_MOVIES) {
+        if (status == Constants.STATUS_SEARCH_STAGE_PROCESS_MOVIE) {
+            state = Constants.STAGE_MOVIE_RET
+            ((MovieRetrieverStage) stages[Constants.STAGE_MOVIE_RET]).startStage(title)
 
-            setMovies(stages[Constants.STAGE_SEARCH].movieResults)
+        } else if (status == Constants.STATUS_SEARCH_STAGE_FOUND_MOVIE) {
 
-        } else if (status == Constants.STATUS_SEARCH_STAGE_NOT_FOUND_MOVIES) {
+            state = Constants.STATE_IDLE
+            // exit pipeline, notify frontend
+
+        } else if (status == Constants.STATUS_SEARCH_STAGE_GETTING_MOVIE_TITLES) {
+            //Get titles
+            status = Constants.STATUS_SEARCH_STAGE_PROCESS_MOVIE
+            state = Constants.STATE_IDLE
+            // exit pipeline, notify frontend
 
         }
     }

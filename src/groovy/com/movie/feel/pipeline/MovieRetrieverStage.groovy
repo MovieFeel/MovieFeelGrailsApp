@@ -21,7 +21,14 @@ import java.util.concurrent.CountDownLatch
 class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I {
 
     @Override
-    List<Movie> startStage(String title) {
+    void startStage(String title) {
+
+        Movie movie = Movie.findByTitle(title)
+
+        if (movie != null) {
+            notifyExistingMovie(movie)
+            return
+        }
 
         def imdbMovies = new ArrayList<Movie>()
         def rottenTomatoesMovies = new ArrayList<Movie>()
@@ -47,21 +54,25 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
         // we should now have both lists of movies
 
 
-        return synchronizeResults(imdbMovies, rottenTomatoesMovies)
+        synchronizeResults(imdbMovies, rottenTomatoesMovies)
+    }
+
+    void notifyExistingMovie(Movie movie) {
+        status = Constants.STATUS_SEARCH_STAGE_FOUND_MOVIE
+        notifyObserversWithCurrentStatus()
     }
 
     @Override
-    List<Movie> synchronizeResults(List<Movie>... movies) {
+    void synchronizeResults(List<Movie>... movies) {
         //TODO: somehow synchronize the lists
         status = Constants.STATUS_RETRIEVER_STAGE_SUCCESS
         notifyObserversWithCurrentStatus()
-        return null
     }
 
     // TODO: should these 2 be overriden, or non-existent in the interface?
     @Override
     void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
-      //  outputList = imdbApi.searchForMovieByTitle(title)
+        //  outputList = imdbApi.searchForMovieByTitle(title)
         latch.countDown()
     }
 

@@ -13,12 +13,12 @@ import java.util.concurrent.CountDownLatch
  */
 public interface MovieRetrieverStage_I {
 
-    List<Movie> startStage(String title)
+    void startStage(String title)
 
     void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList)
 
     void getRottenTomatoesMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList)
 
-    List<Movie> synchronizeResults(List<Movie>... movies)
+    void synchronizeResults(List<Movie>... movies)
 
 }

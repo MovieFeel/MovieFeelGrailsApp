@@ -24,10 +24,6 @@ class AbstractStage implements Subject_I {
     MovieSitesApi_I imdbApi
     String status
 
-    //
-    List<Movie> movieResults
-    List<Review> reviewResults
-
     public AbstractStage() {
         status = Constants.STATUS_EMPTY
         rottenTomatoesApi = RottenTomatoesApi.getInstance(Constants.RottenTomatoesApiKey, Constants.RottenTomatoesMoviePageLimit, Constants.RottenTomatoesReviewPageLimit)

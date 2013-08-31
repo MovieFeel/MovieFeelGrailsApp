@@ -53,6 +53,10 @@ class RottenTomatoesApi implements MovieSitesApi_I {
         return rottenTomatoesApi
     }
 
+    @Override
+    List<String> getAllMoviesTitlesLike(String title) {
+        return null  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
     @Override
     List<Movie> searchForMovieByTitle(String title) {

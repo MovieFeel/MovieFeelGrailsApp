@@ -45,10 +45,27 @@ class ImdbApi implements MovieSitesApi_I {
         return imdbApi
     }
 
-    public static ImdbApi getInstance(){
-        if(imdbApi==null)
+    public static ImdbApi getInstance() {
+        if (imdbApi == null)
             imdbApi = new ImdbApi(Constants.RottenTomatoesMoviePageLimit, "full")
         return imdbApi
+    }
+
+    @Override
+    HashMap<String, String> getAllMoviesTitlesLike(String title) {
+        String URL = "http://mymovieapi.com/?title=" + title + "&plot=" + plotType + "&limit=" + pageLimit
+        HashMap<String, String> movies = new HashMap<String, String>()
+
+        def jsonMovies = (JSONArray) doRequest(URL)
+
+        JSONObject jsonMovie;
+        for (int i = 0; i < jsonMovies.size(); i++) {
+            jsonMovie = jsonMovies.getJSONObject(i)
+            String mTitle = jsonMovie.title
+            movies.put(mTitle, jsonMovie.id)
+        }
+
+        return movies
     }
 
     @Override
@@ -104,7 +121,7 @@ class ImdbApi implements MovieSitesApi_I {
 //            m.validate()
 //            if (m.validate()) {
 //                m.save()
-              movies.add(m)
+            movies.add(m)
 //            }
 
             //TODO: saves and validations done in the pipeline stages
@@ -126,8 +143,8 @@ class ImdbApi implements MovieSitesApi_I {
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
-        for (int i = 0; i < reviewsNumber; i+=halfReviews) {
-            Thread currentThread = new MovieScrapper(latch,movie,i,halfReviews)
+        for (int i = 0; i < reviewsNumber; i += halfReviews) {
+            Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews)
             currentThread.run()
         }
 
@@ -140,10 +157,8 @@ class ImdbApi implements MovieSitesApi_I {
         return movie.reviews.asList()
     }
 
-
     //TODO: Make the dude include it in the api
-    int getReviewsNumberUsingScrapping(Movie movie)
-    {
+    int getReviewsNumberUsingScrapping(Movie movie) {
         String url = " http://www.imdb.com/title/" + movie.imdbId
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla").timeout(600000).get()
