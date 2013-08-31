@@ -26,6 +26,9 @@ class Constants {
     public static final String STATUS_EMPTY = "PIPELINE_STAGE_STATUS_EMPTY"
     public static final String STATUS_RETRIEVER_STAGE_SUCCESS = "PIPELINE_RETRIEVER_STAGE_SUCESS"
     public static final String STATUS_RETRIEVER_STAGE_FAIL = "PIPELINE_RETRIEVER_STAGE_FAIL"
+    public static final String STATUS_SEARCH_STAGE_FOUND_MOVIES = "PIPELINE_SEARCH_STAGE_FOUND_MOVIES"
+    public static final String STATUS_SEARCH_STAGE_NOT_FOUND_MOVIES = "PIPELINE_SEARCH_STAGE_NOT_FOUND_MOVIES"
+
     // etc
 
     // Pipeline stages

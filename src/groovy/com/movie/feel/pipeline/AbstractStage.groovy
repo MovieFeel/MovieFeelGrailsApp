@@ -1,5 +1,7 @@
 package com.movie.feel.pipeline
 
+import com.movie.feel.Movie
+import com.movie.feel.Review
 import com.movie.feel.apis.ImdbApi
 import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
@@ -16,16 +18,17 @@ import com.movie.feel.interfaces.observer.Subject_I
  */
 class AbstractStage implements Subject_I {
 
+    // in our case it is only 1 observer, but leaving it like this just in case we'll need it like this in the future.
     List<Observer_I> observers
     MovieSitesApi_I rottenTomatoesApi
     MovieSitesApi_I imdbApi
     String status
 
-    public AbstractStage() {
-        init()
-    }
+    //
+    List<Movie> movieResults
+    List<Review> reviewResults
 
-    void init() {
+    public AbstractStage() {
         status = Constants.STATUS_EMPTY
         rottenTomatoesApi = RottenTomatoesApi.getInstance(Constants.RottenTomatoesApiKey, Constants.RottenTomatoesMoviePageLimit, Constants.RottenTomatoesReviewPageLimit)
         imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, Constants.IMDB_PLOT_TYPE)

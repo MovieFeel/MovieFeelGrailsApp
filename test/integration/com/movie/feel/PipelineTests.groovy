@@ -75,6 +75,6 @@ class PipelineTests {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()
         mrs.init()
-        assertTrue(mrs.startStage("Lord+of+the+Rings") == null)
+        assertTrue(mrs.startStage("Lord of the Rings") == null)
     }
 }

@@ -1,6 +1,9 @@
 package com.movie.feel.pipeline
 
+import com.movie.feel.Movie
+import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
+import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.observer.Observer_I
 import com.movie.feel.interfaces.observer.Subject_I
 
@@ -22,12 +25,19 @@ class PipelineWrapper implements Observer_I {
         stages[Constants.STAGE_REVIEW_PROC] = new ReviewProcessingStage()
     }
 
+    // results which will be set from the stages
+    List<Movie> movies;
+    List<Review> reviews;
+
     String state
     String status
     def notificationService
 
+    String title
+
     public void startPipeline(String title) {
         this.state = Constants.STATE_IDLE
+        this.title = Extras.formatTitle(title)
         // initializer for the observer
         Iterator<Map.Entry<String, AbstractStage>> stageIterator = stages.iterator()
         while (stageIterator.hasNext()) {
@@ -42,6 +52,7 @@ class PipelineWrapper implements Observer_I {
             case Constants.STATE_IDLE:
 
                 setState(Constants.STATE_SEARCH)
+                ((SearchStage)stages[Constants.STAGE_SEARCH]).searchForMovieByTitle(title)
 
                 break;
 
@@ -110,9 +121,29 @@ class PipelineWrapper implements Observer_I {
         return this.status
     }
 
+    void setMovies(List<Movie> movies) {
+        this.movies = movies
+    }
+
+    void setReviews(List<Review> reviews) {
+        this.reviews = reviews
+    }
+
     @Override
     void update(Subject_I o) {
         status = o.getStatus()
         println("Status changed to: " + status)
+
+        // TODO: do something! a stage has signaled its completion
+
+        if (status == Constants.STATUS_SEARCH_STAGE_FOUND_MOVIES) {
+
+            setMovies(stages[Constants.STAGE_SEARCH].movieResults)
+
+        } else if (status == Constants.STATUS_SEARCH_STAGE_NOT_FOUND_MOVIES) {
+
+        }
     }
+
+
 }

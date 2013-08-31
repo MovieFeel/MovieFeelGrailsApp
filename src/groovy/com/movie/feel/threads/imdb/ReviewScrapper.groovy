@@ -62,7 +62,7 @@ class MovieScrapper extends Thread {
                 movie.validate()
                 movie.save(flush: true)
             }
-            reviewsList.add(review)
+            reviewsList.add(review)                                                                                                                                                          a
         }
         return reviewsList
     }
