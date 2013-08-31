@@ -69,7 +69,12 @@ class ImdbApi implements MovieSitesApi_I {
     }
 
     @Override
-    List<Movie> searchForMovieByTitle(String title) {
+    void saveAllMoviesWithTitleLike(String title) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    List<Movie> searchForMoviesByTitle(String title) {
 
         String URL = "http://mymovieapi.com/?title=" + title + "&plot=" + plotType + "&limit=" + pageLimit
         List<Movie> movies = new ArrayList<Movie>()
@@ -130,6 +135,59 @@ class ImdbApi implements MovieSitesApi_I {
 
         return movies
     }
+
+    @Override
+    Movie searchForMovieById(String id) {
+
+        String URL = "http://mymovieapi.com/?id=" + id + "&plot=" + plotType + "&limit=" + pageLimit
+        def jsonMovie = (JSONObject) doRequest(URL)
+        String mTitle = jsonMovie.title
+        Movie movie = Movie.findByTitle(mTitle)
+
+        // movie already exists
+        if (movie != null) {
+
+            // just grab the id
+            movie.imdbId = jsonMovie.imdb_id
+
+        } else {
+            // set the "already the same name" variables
+            movie = new Movie(jsonMovie)
+            def map = constructMap()
+            for (def jsonElement : jsonMovie)
+                if (map.containsKey(jsonElement.getKey())) {
+                    if (!jsonElement.getKey().equals("rating") && !jsonElement.getKey().equals("runtime"))
+                        movie.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
+                    else if (jsonElement.getKey().equals("runtime")) {
+                        ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
+
+                        movie.extendedRuntimes = runtimes
+                        String firstRutime = m.extendedRuntimes.get(0).split(" ")[0]
+                        movie.runtime = firstRutime.toString()
+                    } else {
+                        // treat the rating in a special way
+                        HashMap<String, String> ratings = new HashMap<String, String>()
+                        ratings.put("critics_rating", "")
+                        ratings.put("critics_score", "")
+                        ratings.put("audience_rating", "")
+                        ratings.put("audience_score", (Double.parseDouble(jsonElement.getValue().toString()) * 10).toString())
+                        movie.ratings = ratings.toString()
+
+                    }
+                }
+
+
+            // can someone explain why I have to do this?
+//            movie.validate()
+//            if (movie.validate()) {
+//                movie.save()
+            //TODO: saves and validations done in the pipeline stages
+            //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
+        }
+
+        return movie
+    }
+
 
     //TODO Find the optimal number of threads(Darius)
 

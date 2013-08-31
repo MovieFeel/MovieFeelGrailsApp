@@ -14,7 +14,11 @@ interface MovieSitesApi_I {
 
     HashMap<String, String> getAllMoviesTitlesLike(String title)
 
-    List<Movie> searchForMovieByTitle(String title)
+    void saveAllMoviesWithTitleLike(String title)
+
+    List<Movie> searchForMoviesByTitle(String title)
+
+    Movie searchForMovieById(String id)
 
     List<Review> getReviewsForMovie(Movie movie)
 }

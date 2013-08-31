@@ -10,6 +10,7 @@ import grails.converters.JSON
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.impl.client.DefaultHttpClient
+import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONElement
 import org.codehaus.groovy.grails.web.json.JSONObject
 
@@ -54,12 +55,28 @@ class RottenTomatoesApi implements MovieSitesApi_I {
     }
 
     @Override
-    List<String> getAllMoviesTitlesLike(String title) {
+    void saveAllMoviesWithTitleLike(String title) {
+        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + title + "&page_limit=" + moviePageLimit
+
+        def jsonMovies = (JSONArray) doRequest(URL)
+
+        JSONObject jsonMovie;
+        for (int i = 0; i < jsonMovies.size(); i++) {
+            jsonMovie = jsonMovies.getJSONObject(i)
+
+            //TODO save the movies in the database
+            //String mTitle = jsonMovie.title
+            //movies.put(mTitle, jsonMovie.id)
+        }
+    }
+
+    @Override
+    HashMap<String, String> getAllMoviesTitlesLike(String title) {
         return null  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    List<Movie> searchForMovieByTitle(String title) {
+    List<Movie> searchForMoviesByTitle(String title) {
         String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + title + "&page_limit=" + moviePageLimit
 
         def jsonResponse = doRequest(URL)
@@ -92,6 +109,36 @@ class RottenTomatoesApi implements MovieSitesApi_I {
             println(System.currentTimeMillis() - initTime)
         } else println("No movies found")
         return movies
+    }
+
+    @Override
+    Movie searchForMovieById(String id) {
+        //TODO MAKE THE CORRECT REQUEST
+        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + id + "&page_limit=" + moviePageLimit
+
+        def jsonResponse = doRequest(URL)
+
+        def jsonMovie = jsonResponse.movie
+
+        // automatically finds and fills the fields by their names
+        // hint: will have to construct map out of it for IMDB, for example,
+        // if the fields are not the same <=> normalize
+        Movie movie = new Movie(jsonMovie)
+        movie.rottenTomatoId = jsonMovie?.get("id")
+        // these have to be explicit for some reason
+
+        movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
+        movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
+        movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
+
+        // can someone explain why I have to do this?
+//            movie.validate()
+//            if (movie.validate()) {
+//                movie.save()
+        //TODO: saves and validations done in the pipeline stages
+        //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
+
+        return movie
     }
 
     /**

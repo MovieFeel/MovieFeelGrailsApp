@@ -39,16 +39,16 @@ class PipelineTests {
         pipeline.startPipeline("Test")
         assertTrue(pipeline.getState() == Constants.STATE_IDLE)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_SEARCH)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_MOVIE_RET)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_REVIEW_RET)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_REVIEW_PROC)
 
     }
@@ -57,16 +57,18 @@ class PipelineTests {
     void initialTestStatus() {
         PipelineWrapper pipeline = new PipelineWrapper()
         pipeline.startPipeline("Test")
-        pipeline.startPipeline("Test")
         assertTrue(pipeline.getState() == Constants.STATE_IDLE)
 
-        pipeline.nextState()
+        pipeline.executeState()
+        assertTrue(pipeline.getState() == Constants.STATE_INIT)
+
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_SEARCH)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getState() == Constants.STATE_MOVIE_RET)
 
-        pipeline.nextState()
+        pipeline.executeState()
         assertTrue(pipeline.getStatus() == Constants.STATUS_RETRIEVER_STAGE_SUCCESS)
     }
 
@@ -74,7 +76,7 @@ class PipelineTests {
     void testFirstStage() {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()
-        mrs.init()
+        mrs.startStage()
         assertTrue(mrs.startStage("Lord of the Rings") == null)
     }
 }

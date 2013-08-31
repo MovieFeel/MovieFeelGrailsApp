@@ -23,7 +23,7 @@ class RetrievalService {
 
         def urlTitle = Extras.formatTitle(title)
 
-        def rottenTomatoMovies = rottenTomatoesApi.searchForMovieByTitle(urlTitle)
+        def rottenTomatoMovies = rottenTomatoesApi.searchForMoviesByTitle(urlTitle)
 
         return rottenTomatoMovies
     }
@@ -60,7 +60,7 @@ class RetrievalService {
     List<Movie> searchForImdbMovie(String title) {
         def urlTitle = Extras.formatTitle(title)
 
-        def imdbMovies = imdbApi.searchForMovieByTitle(urlTitle)
+        def imdbMovies = imdbApi.searchForMoviesByTitle(urlTitle)
 
         return imdbMovies
 

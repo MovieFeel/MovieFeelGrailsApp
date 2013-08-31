@@ -24,7 +24,6 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
     void startStage(String title) {
 
         Movie movie = Movie.findByTitle(title)
-
         if (movie != null) {
             notifyExistingMovie(movie)
             return
@@ -34,16 +33,19 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
         def rottenTomatoesMovies = new ArrayList<Movie>()
         def latch = new CountDownLatch(Constants.NUMBER_OF_APIS)
 
+        //TODO: Fara thread-uri daca facem una dupa alta...
+
         Thread imdbThread = new Thread() {
             public void run() {
-                getImdbMoviesByTitle(title, latch, imdbMovies)
+                getImdbMovieById(movie.imdbId, latch)
             }
         }
 
         Thread rottenTomatoesThread = new Thread() {
 
             public void run() {
-                getRottenTomatoesMoviesByTitle(title, latch, rottenTomatoesMovies)
+                getMatchingRottenTomatoesMovies(movie.title)
+                getRottenTomatoesMovieById(movie.rottenTomatoId, latch)
             }
         }
 
@@ -69,17 +71,18 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
         notifyObserversWithCurrentStatus()
     }
 
-    // TODO: should these 2 be overriden, or non-existent in the interface?
-    @Override
-    void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
-        //  outputList = imdbApi.searchForMovieByTitle(title)
+    void getImdbMovieById(String id, CountDownLatch latch) {
+        imdbApi.searchForMovieById(id)
         latch.countDown()
     }
 
-    @Override
-    void getRottenTomatoesMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList) {
-        // outputList = rottenTomatoesApi.searchForMovieByTitle(title)
+    void getRottenTomatoesMovieById(String id, CountDownLatch latch) {
+        rottenTomatoesApi.searchForMovieById(id)
         latch.countDown()
+    }
+
+    void getMatchingRottenTomatoesMovies(String title) {
+        rottenTomatoesApi.getAllMoviesTitlesLike(title)
     }
 
 }

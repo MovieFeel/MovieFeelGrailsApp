@@ -15,10 +15,5 @@ public interface MovieRetrieverStage_I {
 
     void startStage(String title)
 
-    void getImdbMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList)
-
-    void getRottenTomatoesMoviesByTitle(String title, CountDownLatch latch, List<Movie> outputList)
-
     void synchronizeResults(List<Movie>... movies)
-
 }

@@ -17,6 +17,10 @@ import com.movie.feel.interfaces.observer.Subject_I
  */
 class PipelineWrapper implements Observer_I {
 
+    PipelineWrapper() {
+        this.state =  Constants.STATE_IDLE
+    }
+
     private static HashMap<String, AbstractStage> stages
     static {
         stages = new HashMap<String, AbstractStage>()
