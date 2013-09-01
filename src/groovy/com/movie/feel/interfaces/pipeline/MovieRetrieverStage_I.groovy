@@ -14,6 +14,4 @@ import java.util.concurrent.CountDownLatch
 public interface MovieRetrieverStage_I {
 
     void startStage(String title)
-
-    void synchronizeResults(List<Movie>... movies)
 }

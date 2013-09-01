@@ -56,17 +56,34 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
     @Override
     void saveAllMoviesWithTitleLike(String title) {
-        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + title + "&page_limit=" + moviePageLimit
 
-        def jsonMovies = (JSONArray) doRequest(URL)
+        def formattedTitle = Extras.formatTitle(title)
+        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + formattedTitle + "&page_limit=" + moviePageLimit
+        def jsonResponse = doRequest(URL)
+        def jsonMovies = (JSONArray) jsonResponse.movies
 
-        JSONObject jsonMovie;
+        JSONObject jsonMovie
         for (int i = 0; i < jsonMovies.size(); i++) {
             jsonMovie = jsonMovies.getJSONObject(i)
 
-            //TODO save the movies in the database
-            //String mTitle = jsonMovie.title
-            //movies.put(mTitle, jsonMovie.id)
+            Movie movie = Movie.findByTitle(title)
+
+            if(movie == null)
+            {
+                movie = new Movie(jsonMovie)
+            }
+
+            movie.rottenTomatoId = jsonMovie?.get("id")
+            // these have to be explicit for some reason
+
+            movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
+            movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
+            movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
+
+            movie.validate()
+            if(movie.validate()) {
+                movie.save()
+            }
         }
     }
 
@@ -113,8 +130,7 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
     @Override
     Movie searchForMovieById(String id) {
-        //TODO MAKE THE CORRECT REQUEST
-        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?" + key + "&q=" + id + "&page_limit=" + moviePageLimit
+        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies/"+ id +  ".json?apikey=" + key
 
         def jsonResponse = doRequest(URL)
 
@@ -131,12 +147,9 @@ class RottenTomatoesApi implements MovieSitesApi_I {
         movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
         movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
 
-        // can someone explain why I have to do this?
-//            movie.validate()
-//            if (movie.validate()) {
-//                movie.save()
-        //TODO: saves and validations done in the pipeline stages
-        //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
+        movie.validate()
+        if (movie.validate())
+            movie.save()
 
         return movie
     }

@@ -64,7 +64,6 @@ class ImdbApi implements MovieSitesApi_I {
             String mTitle = jsonMovie.title
             movies.put(mTitle, jsonMovie.id)
         }
-
         return movies
     }
 
@@ -123,14 +122,11 @@ class ImdbApi implements MovieSitesApi_I {
             }
 
             // can someone explain why I have to do this?
-//            m.validate()
-//            if (m.validate()) {
-//                m.save()
+            m.validate()
+            if (m.validate()) {
+                m.save()
             movies.add(m)
-//            }
-
-            //TODO: saves and validations done in the pipeline stages
-            //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
+            }
         }
 
         return movies
@@ -139,7 +135,7 @@ class ImdbApi implements MovieSitesApi_I {
     @Override
     Movie searchForMovieById(String id) {
 
-        String URL = "http://mymovieapi.com/?id=" + id + "&plot=" + plotType + "&limit=" + pageLimit
+        String URL = "http://mymovieapi.com/?ids=" + id + "&type=json"
         def jsonMovie = (JSONObject) doRequest(URL)
         String mTitle = jsonMovie.title
         Movie movie = Movie.findByTitle(mTitle)
@@ -162,7 +158,7 @@ class ImdbApi implements MovieSitesApi_I {
                         ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
 
                         movie.extendedRuntimes = runtimes
-                        String firstRutime = m.extendedRuntimes.get(0).split(" ")[0]
+                        String firstRutime = movie.extendedRuntimes.get(0).split(" ")[0]
                         movie.runtime = firstRutime.toString()
                     } else {
                         // treat the rating in a special way
@@ -176,13 +172,9 @@ class ImdbApi implements MovieSitesApi_I {
                     }
                 }
 
-
-            // can someone explain why I have to do this?
-//            movie.validate()
-//            if (movie.validate()) {
-//                movie.save()
-            //TODO: saves and validations done in the pipeline stages
-            //TODO: warning: do saves / validates ON THE MAIN THREAD! DO NOT DO THEM ON THE FETCHER THREADS!
+           movie.validate()
+            if (movie.validate())
+                movie.save()
         }
 
         return movie

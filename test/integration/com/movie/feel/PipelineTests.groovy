@@ -5,6 +5,7 @@ import com.movie.feel.pipeline.MovieRetrieverStage
 import com.movie.feel.pipeline.PipelineWrapper
 import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.assertNotNull
@@ -32,7 +33,7 @@ class PipelineTests {
     /**
      * TODO: delete after implementing everything
      */
-    @Test
+    @Ignore
     void testPipelineStageTransition() {
 
         PipelineWrapper pipeline = new PipelineWrapper()
@@ -53,7 +54,7 @@ class PipelineTests {
 
     }
 
-    @Test
+    @Ignore
     void initialTestStatus() {
         PipelineWrapper pipeline = new PipelineWrapper()
         pipeline.startPipeline("Test")
@@ -76,7 +77,6 @@ class PipelineTests {
     void testFirstStage() {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()
-        mrs.startStage()
-        assertTrue(mrs.startStage("Lord of the Rings") == null)
+        assertTrue(mrs.startStage("tt0120737") == null)
     }
 }
