@@ -5,7 +5,9 @@ import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
+import com.movie.feel.threads.imdb.MovieScrapper
 import com.movie.feel.threads.rottentomatoes.MovieParser
+import com.movie.feel.threads.rottentomatoes.ReviewParser
 import grails.converters.JSON
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpGet
@@ -162,34 +164,25 @@ class RottenTomatoesApi implements MovieSitesApi_I {
      */
     @Override
     List<Review> getReviewsForMovie(Movie movie) {
-        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.rottenTomatoId + "/reviews.json?" + key + "&page_limit=" + reviewPageLimit
+        String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.rottenTomatoId + "/reviews.json?" + key + "&page_limit=" + 1 +"&page=" + 1 +"&review_type=all"
 
         List<Review> reviews = Collections.synchronizedList(new ArrayList<Review>())
 
         def jsonResponse = doRequest(URL)
 
-        def jsonReviews = jsonResponse.reviews
-        JSONObject jsonReview;
-        if (jsonReviews) {
-            for (int i = 0; i < jsonReviews.size(); i++) {
-                jsonReview = jsonReviews.getJSONObject(i)
+        int totalReviews = (int) jsonResponse.total
 
-                Review review = new Review(jsonReview)
-                review.date = Extras.formatDate(jsonReview?.get("date").toString(), Constants.RottenTomatoes)
-                review.movie = movie
-                review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
-                review.source = Constants.RottenTomatoes
+        int numberOfThreads = totalReviews / reviewPageLimit
 
-//                review.validate()
-//                if (!review.hasErrors()) {
-//
-//                    movie.addToReviews(review)
-//                    movie.validate()
-//                    movie.save(flush: true)
-                   reviews.add(review)
-//                }
-            }
+        CountDownLatch latch = new CountDownLatch(numberOfThreads)
+
+        for (int i = 0; i < numberOfThreads; i += 1) {
+            Thread currentThread = new ReviewParser(latch, movie, i, reviews)
+            currentThread.run()
         }
+
+        latch.await()
+
         return reviews
     }
 
