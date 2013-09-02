@@ -21,18 +21,20 @@ class MovieScrapper extends Thread {
     Movie movie
     int startPosition
     int maxReviews
+    List<Review> reviews
 
-    public MovieScrapper(CountDownLatch latch,Movie movie,int startPosition, int maxReviews) {
+    public MovieScrapper(CountDownLatch latch,Movie movie,int startPosition, int maxReviews, List<Review> reviews) {
         this.latch = latch
         this.movie = movie
         this.startPosition = startPosition
         this.maxReviews = maxReviews
+        this.reviews = reviews
     }
 
     @Override
     void run() {
         // automatically adds them to the movie as well
-        getReviewsForMovie(movie,startPosition,maxReviews)
+        reviews.addAll(getReviewsForMovie(movie,startPosition,maxReviews))
         latch.countDown()
     }
 
@@ -58,11 +60,9 @@ class MovieScrapper extends Thread {
             review.movie = movie
             review.validate()
             if (!review.hasErrors()) {
-                movie.addToReviews(review)
-                movie.validate()
-                movie.save(flush: true)
+                reviewsList.add(review)
             }
-            reviewsList.add(review)                                                                                                                                                          a
+
         }
         return reviewsList
     }

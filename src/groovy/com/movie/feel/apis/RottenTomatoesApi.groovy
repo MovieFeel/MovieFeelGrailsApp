@@ -164,7 +164,7 @@ class RottenTomatoesApi implements MovieSitesApi_I {
     List<Review> getReviewsForMovie(Movie movie) {
         String URL = "http://api.rottentomatoes.com/api/public/v1.0/movies/" + movie.rottenTomatoId + "/reviews.json?" + key + "&page_limit=" + reviewPageLimit
 
-        List<Review> reviews = new ArrayList<Review>()
+        List<Review> reviews = Collections.synchronizedList(new ArrayList<Review>())
 
         def jsonResponse = doRequest(URL)
 

@@ -1,13 +1,8 @@
 package com.movie.feel.pipeline
 
 import com.movie.feel.Movie
-import com.movie.feel.apis.ImdbApi
-import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
-import com.movie.feel.helpers.Extras
-import com.movie.feel.interfaces.MovieSitesApi_I
-import com.movie.feel.interfaces.observer.Observer_I
-import com.movie.feel.interfaces.observer.Subject_I
+import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.interfaces.pipeline.MovieRetrieverStage_I
 
 import java.util.concurrent.CountDownLatch
@@ -31,6 +26,7 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
 
         movie = imdbApi.searchForMovieById(imdbId)
         rottenTomatoesApi.saveAllMoviesWithTitleLike(movie.title)
+        CurrentUserData.movie = movie
     }
 
     void notifyExistingMovie(Movie movie) {

@@ -48,7 +48,6 @@ class RetrievalServiceTests {
         def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
 
         assertTrue(toyStoryReviews.size() > 0)
-
     }
 
     @Test
@@ -60,7 +59,6 @@ class RetrievalServiceTests {
     @Test
     void testImdbMovieReviewRetrieval() {
         def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
-        //def reviews = retrievalService.getImdbMovieReviews(lordOfTheRingsResults[0])
         def reviews = retrievalService.getReviewsForMovieImdb("Lord of the Rings")
         assert(reviews.size() > 0)
     }

@@ -3,6 +3,7 @@ package com.movie.feel
 import com.movie.feel.helpers.Constants
 import com.movie.feel.pipeline.MovieRetrieverStage
 import com.movie.feel.pipeline.PipelineWrapper
+import com.movie.feel.pipeline.ReviewRetrieverStage
 import org.junit.After
 import org.junit.Before
 import org.junit.Ignore
@@ -73,10 +74,18 @@ class PipelineTests {
         assertTrue(pipeline.getStatus() == Constants.STATUS_RETRIEVER_STAGE_SUCCESS)
     }
 
-    @Test
+    @Ignore
     void testFirstStage() {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()
         assertTrue(mrs.startStage("tt0120737") == null)
+    }
+
+    @Test
+    void testFirst2Stages() {
+        MovieRetrieverStage mrs = new MovieRetrieverStage()
+        assertTrue(mrs.startStage("tt0120737") == null)
+        ReviewRetrieverStage rrs = new ReviewRetrieverStage()
+        assertTrue(rrs.startStage() == null)
     }
 }

@@ -191,20 +191,20 @@ class ImdbApi implements MovieSitesApi_I {
 
         long initTime = System.currentTimeMillis()
 
+        List<Review> reviews = Collections.synchronizedList(new ArrayList<Review>());
         CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
         for (int i = 0; i < reviewsNumber; i += halfReviews) {
-            Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews)
+            Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews,reviews)
             currentThread.run()
         }
-
 
         latch.await()
 
         println("Imdb Review Retrieval Threads time: ")
         println(System.currentTimeMillis() - initTime)
 
-        return movie.reviews.asList()
+        return reviews
     }
 
     //TODO: Make the dude include it in the api
