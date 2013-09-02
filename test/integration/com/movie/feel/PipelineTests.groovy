@@ -74,7 +74,7 @@ class PipelineTests {
         assertTrue(pipeline.getStatus() == Constants.STATUS_RETRIEVER_STAGE_SUCCESS)
     }
 
-    @Ignore
+    @Test
     void testFirstStage() {
 
         MovieRetrieverStage mrs = new MovieRetrieverStage()

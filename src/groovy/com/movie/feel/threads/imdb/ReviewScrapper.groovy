@@ -46,7 +46,7 @@ class MovieScrapper extends Thread {
     List<Review> getReviewsUsingScrapping(String url,Movie movie) {
         List<Review> reviewsList = new ArrayList<Review>()
         Document doc = Jsoup.connect(url)
-                .userAgent("Mozilla").timeout(600000).get()
+                .userAgent("Mozilla").timeout(600000).maxBodySize(Integer.MAX_VALUE).get()
 
         Elements reviews = doc.select("#tn15content > div >  b + a, #tn15content > div > br + small ,#tn15content > p")
         for(int index = 0; index < reviews.size()-2; index+=3)
