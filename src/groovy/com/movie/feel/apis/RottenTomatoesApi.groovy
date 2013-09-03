@@ -172,11 +172,11 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         int totalReviews = (int) jsonResponse.total
 
-        int numberOfThreads = totalReviews / reviewPageLimit
+        int numberOfThreads = Math.ceil(totalReviews / reviewPageLimit)
 
         CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
-        for (int i = 0; i < numberOfThreads; i += 1) {
+        for (int i = 1; i <= numberOfThreads; i += 1) {
             Thread currentThread = new ReviewParser(latch, movie, i, reviews)
             currentThread.run()
         }

@@ -67,7 +67,8 @@ class ReviewParser extends Thread  {
                 review.movie = movie
                 review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
                 review.source = Constants.RottenTomatoes
-                reviews.add(review)
+                if(review.validate())
+                    reviews.add(review)
             }
         }
 
