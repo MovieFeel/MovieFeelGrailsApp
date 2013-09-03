@@ -13,5 +13,6 @@ class CurrentUserData {
 
     public static Movie movie
     public static HashMap<String, String> movieTitles
+    public static String output
 
 }

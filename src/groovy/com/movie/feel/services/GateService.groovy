@@ -1,5 +1,6 @@
 package com.movie.feel.services
 
+import com.movie.feel.Review
 import gate.Corpus
 import gate.CorpusController
 import gate.Document
@@ -52,8 +53,12 @@ class GateService {
         this.application = application;
     }
 
-    private GateService() {
-        Gate.init();
+    public GateService() {
+        //Gate.pluginsHome = new File("/WEB-INF/gate-files/plugins")
+       // Gate.gateHome = new File("/WEB-INF/gate-files/")
+        //Gate.siteConfigFile = new File("/WEB-INF/gate-files/gate.xml")
+        //Gate.userConfigFile = new File("/WEB-INF/gate-files/user-gate.xml")
+        Gate.init()
          // load ANNIE as an application from a gapp file
          application =
             PersistenceManager.loadObjectFromFile(new File(new File(
@@ -72,6 +77,63 @@ class GateService {
         gate.Factory.deleteResource(corpus);
         gate.Factory.deleteResource(application);
     }
+
+    public String anotateReviews(List<Review> reviews)
+    {
+        String mime = "text/plain";
+        List<Document> documents = new ArrayList<Document>()
+        for (Review review : reviews)
+        {
+            try
+            {
+                documents.add((Document)gate.Factory.createResource("gate.corpora.DocumentImpl",
+                        Utils.featureMap("stringContent", review.quote, "mimeType", mime)))
+            }
+            catch(ResourceInstantiationException e) {
+                return failureMessage("Could not create GATE document for input text")
+            }
+        }
+
+        try {
+            corpus.addAll(documents)
+            application.execute();
+            return successMessage(documents)
+            log.info("Application completed")
+        }
+        catch(ExecutionException e) {
+            return failureMessage("Error occurred which executing GATE application");
+        }
+        finally {
+            // remember to do the clean-up tasks in a finally
+            corpus.clear()
+            for(Document document : documents)
+                gate.Factory.deleteResource(document)
+        }
+    }
+
+    /**
+     * Render the document's features in an HTML table.
+     */
+    private String successMessage(List<Document> documents)
+    throws IOException {
+        String response = "";
+        response+="<h1>Documents features: GATE handler " + handlerId + "</h1>";
+        for (Document doc : documents)
+        {
+            response+="<table>";
+            response+="<tr><td><b>Name</b></td><td><b>Value</b></td></tr>";
+            for(Map.Entry<Object, Object> entry : doc.getFeatures().entrySet()) {
+                response+="<tr><td>" + entry.getKey() + "</td><td>" + entry.getValue() + "</td></tr>";
+            }
+            response+="</table>";
+            response+="<br>";
+            response+="<br>";
+            response+="<br>";
+        }
+
+        return response;
+    }
+
 
     public String testGate(String text) {
         log.info("Handler " + handlerId + " handling request");

@@ -1,8 +1,10 @@
 package com.movie.feel
 
 import com.movie.feel.helpers.Constants
+import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.pipeline.MovieRetrieverStage
 import com.movie.feel.pipeline.PipelineWrapper
+import com.movie.feel.pipeline.ReviewProcessingStage
 import com.movie.feel.pipeline.ReviewRetrieverStage
 import org.junit.After
 import org.junit.Before
@@ -87,5 +89,17 @@ class PipelineTests {
         assertTrue(mrs.startStage("tt0120737") == null)
         ReviewRetrieverStage rrs = new ReviewRetrieverStage()
         assertTrue(rrs.startStage() == null)
+    }
+
+    @Test
+    void testFirst3Stages() {
+        MovieRetrieverStage mrs = new MovieRetrieverStage()
+        assertTrue(mrs.startStage("tt0120737") == null)
+        assertTrue(CurrentUserData.movie.title != null)
+        ReviewRetrieverStage rrs = new ReviewRetrieverStage()
+        assertTrue(rrs.startStage() == null)
+        assertTrue(CurrentUserData.movie.reviews.size() > 0)
+        //ReviewProcessingStage rps = new ReviewProcessingStage()
+        //assertTrue(rps.startStage() == null)
     }
 }

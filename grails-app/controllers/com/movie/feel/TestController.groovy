@@ -1,6 +1,15 @@
 package com.movie.feel
 
-import com.movie.feel.services.GateService;
+import com.movie.feel.helpers.CurrentUserData
+import com.movie.feel.pipeline.MovieRetrieverStage
+import com.movie.feel.pipeline.ReviewProcessingStage
+import com.movie.feel.pipeline.ReviewRetrieverStage
+import com.movie.feel.services.GateService
+
+import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertTrue
+import static org.junit.Assert.assertTrue;
 
 class TestController {
 
@@ -20,8 +29,13 @@ class TestController {
     }
 
     def gateTest(String inputGate) {
-        def outputGate = new GateService().testGate(inputGate);
-
+        MovieRetrieverStage mrs = new MovieRetrieverStage()
+        mrs.startStage("tt0120737")
+        ReviewRetrieverStage rrs = new ReviewRetrieverStage()
+        rrs.startStage()
+        ReviewProcessingStage rps = new ReviewProcessingStage()
+        rps.startStage()
+        def outputGate = CurrentUserData.output
         render view: "index", model: [ inputGate: inputGate, outputGate: outputGate]
     }
 }
