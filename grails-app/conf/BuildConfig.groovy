@@ -57,7 +57,8 @@ grails.project.dependency.resolution = {
 
         compile ":gson:1.1.4"
 
-        runtime ":hibernate:$grailsVersion"
+
+
         runtime ":jquery:1.8.3"
         runtime ":resources:1.2"
 
@@ -68,7 +69,19 @@ grails.project.dependency.resolution = {
 
         build ":tomcat:$grailsVersion"
 
-        runtime ":database-migration:1.3.2"
+
+
+        /*
+        * Internal/Hibernate
+        */
+         //  runtime ":hibernate:$grailsVersion"
+         //  runtime ":database-migration:1.3.2"
+
+        /*
+        * Mongo
+        */
+        compile ":mongodb:1.3.0"
+
 
         compile ':cache:1.0.1'
 
