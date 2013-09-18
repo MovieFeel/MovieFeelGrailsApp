@@ -5,6 +5,7 @@ import com.movie.feel.pipeline.MovieRetrieverStage
 import com.movie.feel.pipeline.ReviewProcessingStage
 import com.movie.feel.pipeline.ReviewRetrieverStage
 import com.movie.feel.services.GateService
+import weka.classifiers.trees.J48
 
 import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertTrue
