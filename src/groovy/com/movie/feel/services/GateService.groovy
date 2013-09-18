@@ -1,5 +1,6 @@
 package com.movie.feel.services
 
+import com.movie.feel.Movie
 import com.movie.feel.Review
 import gate.Corpus
 import gate.CorpusController
@@ -12,6 +13,8 @@ import gate.creole.ResourceInstantiationException
 import gate.creole.SerialAnalyserController
 import gate.util.persistence.PersistenceManager
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -46,6 +49,7 @@ class GateService {
      */
     private Corpus corpus;
 
+    def grailsApplication
     /**
      * Set the application that will be run over the documents.
      */
@@ -54,16 +58,20 @@ class GateService {
     }
 
     public GateService() {
-        //Gate.pluginsHome = new File("/WEB-INF/gate-files/plugins")
-       // Gate.gateHome = new File("/WEB-INF/gate-files/")
-        //Gate.siteConfigFile = new File("/WEB-INF/gate-files/gate.xml")
-        //Gate.userConfigFile = new File("/WEB-INF/gate-files/user-gate.xml")
+        //def realPath = ServletContextHolder.getServletContext().getRealPath("/")
+        // println(realPath)
+        //Gate.pluginsHome = new File(realPath + "/WEB-INF/gate-files/plugins")
+
+        //Gate.gateHome = new File(realPath + "/WEB-INF/gate-files/")
+        //Gate.siteConfigFile = new File(realPath + "/WEB-INF/gate-files/gate.xml")
+        //Gate.userConfigFile = new File(realPath + "/WEB-INF/gate-files/user-gate.xml")
         Gate.init()
          // load ANNIE as an application from a gapp file
          application =
             PersistenceManager.loadObjectFromFile(new File(new File(
                       Gate.getPluginsHome(), ANNIEConstants.PLUGIN_DIR),
                         ANNIEConstants.DEFAULT_FILE));
+
         handlerId = nextId.getAndIncrement();
         log.info("init() for GateHandler " + handlerId);
         // create a corpus and give it to the controller

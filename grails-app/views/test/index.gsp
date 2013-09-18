@@ -13,15 +13,17 @@
 </head>
 
 <body>
-<g:form action="search">
+<g:form action="simpleSearch">
 
     Search for reviews: <input type="text" name="searchValue" size="50" value="${searchValue}">
 
     <g:actionSubmit value="Submit" action="simpleSearch"/>
-
+</g:form>
+<g:form action="gateTest">
     <g:textArea name="inputGate" value="${inputGate}" rows="10" cols="40"/>
 
     <g:actionSubmit value="Submit" action="gateTest"/>
+</g:form>
 
     ${outputGate}
 
@@ -46,6 +48,6 @@
         </ul>
     </g:if>
 
-</g:form>
+
 </body>
 </html>

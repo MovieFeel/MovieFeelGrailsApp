@@ -16,9 +16,7 @@ class TestController {
     def retrievalService
 
     def index() {
-
         render view: "index", model: [results: null, searchValue: "", inputGate: "", outputGate: ""]
-
     }
 
     def simpleSearch(String searchValue) {
@@ -30,7 +28,7 @@ class TestController {
 
     def gateTest(String inputGate) {
         MovieRetrieverStage mrs = new MovieRetrieverStage()
-        mrs.startStage("tt0120737")
+        mrs.startStage("tt0435761")
         ReviewRetrieverStage rrs = new ReviewRetrieverStage()
         rrs.startStage()
         ReviewProcessingStage rps = new ReviewProcessingStage()

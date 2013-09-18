@@ -99,7 +99,7 @@ class PipelineTests {
         ReviewRetrieverStage rrs = new ReviewRetrieverStage()
         assertTrue(rrs.startStage() == null)
         assertTrue(CurrentUserData.movie.reviews.size() > 0)
-        //ReviewProcessingStage rps = new ReviewProcessingStage()
-        //assertTrue(rps.startStage() == null)
+        ReviewProcessingStage rps = new ReviewProcessingStage()
+        assertTrue(rps.startStage() == null)
     }
 }
