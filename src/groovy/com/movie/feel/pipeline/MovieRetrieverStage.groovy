@@ -20,6 +20,7 @@ class MovieRetrieverStage extends AbstractStage implements MovieRetrieverStage_I
     void startStage(String imdbId) {
         Movie movie = Movie.findByImdbId(imdbId)
         if (movie != null) {
+            CurrentUserData.movie = movie
             notifyExistingMovie(movie)
             return
         }

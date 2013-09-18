@@ -48,14 +48,23 @@ class MovieScrapper extends Thread {
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla").timeout(600000).maxBodySize(Integer.MAX_VALUE).get()
 
-        Elements reviews = doc.select("#tn15content > div >  b + a, #tn15content > div > br + small ,#tn15content > p")
-        for(int index = 0; index < reviews.size()-2; index+=3)
+        Elements reviews = doc.select("#tn15content > div >  b + a, #tn15content > div > br + small ,#tn15content > div + p, #tn15content > div > img")
+        for(int index = 0; index < reviews.size()-3; index+=3)
         {
+            def rating
+            if(reviews[index].tagName() == "img")
+            {
+                rating  = reviews[index].attr("alt")
+                if(rating != null && rating.size() > 1)
+                    rating = rating.substring(0,1)
+                index++
+            }
             def critic =  reviews[index].ownText()
             def date = reviews[index + 1].ownText()
             def quote = reviews[index + 2].ownText()
 
-            def review = new Review("IMDB",critic,date,quote)
+
+            def review = new Review("IMDB",critic,date,quote,rating)
 
             review.movie = movie
             review.validate()

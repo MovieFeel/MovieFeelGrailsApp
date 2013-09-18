@@ -64,6 +64,7 @@ class ReviewParser extends Thread  {
 
                 Review review = new Review(jsonReview)
                 review.date = Extras.formatDate(jsonReview?.get("date").toString(), Constants.RottenTomatoes)
+                //review.rating = jsonReview?.get("original_score").toString().substring(0,1)
                 review.movie = movie
                 review.links = Extras.formatHashMap(jsonReview?.get("links")?.toString())
                 review.source = Constants.RottenTomatoes

@@ -58,7 +58,7 @@ class GateService {
     }
 
     public GateService() {
-        //def realPath = ServletContextHolder.getServletContext().getRealPath("/")
+        def realPath = ServletContextHolder.getServletContext().getRealPath("/")
         // println(realPath)
         //Gate.pluginsHome = new File(realPath + "/WEB-INF/gate-files/plugins")
 
@@ -67,10 +67,16 @@ class GateService {
         //Gate.userConfigFile = new File(realPath + "/WEB-INF/gate-files/user-gate.xml")
         Gate.init()
          // load ANNIE as an application from a gapp file
-         application =
-            PersistenceManager.loadObjectFromFile(new File(new File(
-                      Gate.getPluginsHome(), ANNIEConstants.PLUGIN_DIR),
-                        ANNIEConstants.DEFAULT_FILE));
+        // application =
+        //    PersistenceManager.loadObjectFromFile(new File(new File(
+        //              Gate.getPluginsHome(), ANNIEConstants.PLUGIN_DIR),
+        //               ANNIEConstants.DEFAULT_FILE));
+
+        // load the saved application
+        application =
+            (CorpusController) PersistenceManager.loadObjectFromFile(
+                    new File(realPath + "/WEB-INF/gate-files/application.xgapp"));
+
 
         handlerId = nextId.getAndIncrement();
         log.info("init() for GateHandler " + handlerId);
