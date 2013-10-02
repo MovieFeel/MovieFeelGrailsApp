@@ -14,6 +14,7 @@ import gate.creole.SerialAnalyserController
 import gate.util.persistence.PersistenceManager
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import gate.persist.SerialDataStore;
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -59,12 +60,12 @@ class GateService {
 
     public GateService() {
         def realPath = ServletContextHolder.getServletContext().getRealPath("/")
-        // println(realPath)
-        //Gate.pluginsHome = new File(realPath + "/WEB-INF/gate-files/plugins")
+         println(realPath)
+        Gate.pluginsHome = new File(realPath + "/WEB-INF/gate-files/plugins")
 
-        //Gate.gateHome = new File(realPath + "/WEB-INF/gate-files/")
-        //Gate.siteConfigFile = new File(realPath + "/WEB-INF/gate-files/gate.xml")
-        //Gate.userConfigFile = new File(realPath + "/WEB-INF/gate-files/user-gate.xml")
+        Gate.gateHome = new File(realPath + "/WEB-INF/gate-files/")
+        Gate.siteConfigFile = new File(realPath + "/WEB-INF/gate-files/gate.xml")
+        Gate.userConfigFile = new File(realPath + "/WEB-INF/gate-files/user-gate.xml")
         Gate.init()
          // load ANNIE as an application from a gapp file
         // application =
@@ -75,14 +76,14 @@ class GateService {
         // load the saved application
         application =
             (CorpusController) PersistenceManager.loadObjectFromFile(
-                    new File(realPath + "/WEB-INF/gate-files/application.xgapp"));
+                    new File(realPath + "/WEB-INF/gate-files/trialapp.xgapp"));
 
 
         handlerId = nextId.getAndIncrement();
         log.info("init() for GateHandler " + handlerId);
         // create a corpus and give it to the controller
-        corpus = gate.Factory.newCorpus("webapp corpus");
-        ((SerialAnalyserController)application).setCorpus(corpus);
+        corpus = gate.Factory.newCorpus("trial");
+        application.setCorpus(corpus);
     }
 
 
@@ -111,6 +112,9 @@ class GateService {
         try {
             corpus.addAll(documents)
             application.execute();
+
+            FileExportService.exportProcessedReviewsToFiles("Toy Story3", "Rotten Tomatoes", corpus)
+
             return successMessage(documents)
             log.info("Application completed")
         }

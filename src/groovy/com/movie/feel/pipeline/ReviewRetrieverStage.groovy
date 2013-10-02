@@ -4,6 +4,7 @@ import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.interfaces.pipeline.ReviewRetrieverStage_I
+import com.movie.feel.services.FileExportService
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,6 +23,9 @@ class ReviewRetrieverStage extends AbstractStage implements ReviewRetrieverStage
         def rottenTomatoesReviews = rottenTomatoesApi.getReviewsForMovie(movie)
 
         CurrentUserData.movie.reviews = synchronizeLists(imdbReviews, rottenTomatoesReviews)
+
+        //Export the movie reviews to a file
+        FileExportService.exportReviewsToFiles(movie)
     }
 
     private ArrayList<Review> synchronizeLists(List<Review> imdbReviews, List<Review> rottenTomatoesReviews) {

@@ -86,7 +86,7 @@ class PipelineTests {
     @Test
     void testFirst2Stages() {
         MovieRetrieverStage mrs = new MovieRetrieverStage()
-        assertTrue(mrs.startStage("tt0120737") == null)
+        assertTrue(mrs.startStage("tt0435761") == null)
         ReviewRetrieverStage rrs = new ReviewRetrieverStage()
         assertTrue(rrs.startStage() == null)
     }

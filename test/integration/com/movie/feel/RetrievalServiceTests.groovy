@@ -1,5 +1,7 @@
 package com.movie.feel
 
+import com.movie.feel.services.FileExportService
+import com.movie.feel.services.GateService
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -61,5 +63,32 @@ class RetrievalServiceTests {
         def lordOfTheRingsResults = retrievalService.searchForImdbMovie("Lord of the Rings")
         def reviews = retrievalService.getReviewsForMovieImdb("Lord of the Rings")
         assert(reviews.size() > 0)
+    }
+
+    @Test
+    void testRottenTomatoesReviewExport() {
+        def toyStoryMovies = retrievalService.searchForMovie("Toy Story 3")
+        def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
+        FileExportService.exportReviewsToFiles("Toy Story 3", "RottenTomatoes", toyStoryReviews)
+        assertTrue(toyStoryReviews.size() > 0)
+    }
+
+
+    @Test
+    void testRottenTomatoesReviewProcessing() {
+        def toyStoryMovies = retrievalService.searchForMovie("Toy Story 3")
+        def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
+
+        GateService gate = new GateService()
+        gate.anotateReviews(toyStoryReviews)
+    }
+
+    @Test
+    void testRottenTomatoesReviewProcessingBadMovie() {
+        def toyStoryMovies = retrievalService.searchForMovie("Scary Movie 5")
+        def toyStoryReviews = retrievalService.getReviewsForMovie("Scary Movie 5")
+
+        GateService gate = new GateService()
+        gate.anotateReviews(toyStoryReviews)
     }
 }

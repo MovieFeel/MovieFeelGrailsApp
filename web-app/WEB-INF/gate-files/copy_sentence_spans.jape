@@ -1,0 +1,8 @@
+Phase:  CopyParagraphSpan
+Input:  paragraph
+Options: control = all
+
+Rule: paragraph
+( ({paragraph}):span )
+-->
+:span.paragraph = {}
