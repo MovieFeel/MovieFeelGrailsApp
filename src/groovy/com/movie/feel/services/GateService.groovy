@@ -78,7 +78,6 @@ class GateService {
             (CorpusController) PersistenceManager.loadObjectFromFile(
                     new File(realPath + "/WEB-INF/gate-files/trialapp.xgapp"));
 
-
         handlerId = nextId.getAndIncrement();
         log.info("init() for GateHandler " + handlerId);
         // create a corpus and give it to the controller

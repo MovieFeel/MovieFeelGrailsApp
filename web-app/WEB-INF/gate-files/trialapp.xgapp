@@ -102,7 +102,7 @@
                       <string>comment</string>
                       <string>paragraph</string>
                     </localList>
-                    <collectionType>java.util.Arrays$ArrayList</collectionType>
+                    <collectionType>java.util.ArrayList</collectionType>
                   </gate.util.persistence.CollectionPersistence>
                 </entry>
                 <entry>
@@ -158,7 +158,7 @@
               </localMap>
             </runtimeParams>
             <resourceType>gate.creole.Transducer</resourceType>
-            <resourceName>paragraphTransducer</resourceName>
+            <resourceName>JAPE Transducer_0001D</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
@@ -177,7 +177,7 @@
                 <entry>
                   <string>grammarURL</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$../../../../../../../../G:/GrailsExportTest/gateSentiment/copy_sentence_spans.jape</urlString>
+                    <urlString>$gatehome$plugins/ANNIE/copy_sentence_spans.jape</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
                 <entry>
@@ -256,15 +256,15 @@
                   <null/>
                 </entry>
                 <entry>
+                  <string>inputASName</string>
+                  <null/>
+                </entry>
+                <entry>
                   <string>document</string>
                   <null/>
                 </entry>
                 <entry>
                   <string>corpus</string>
-                  <null/>
-                </entry>
-                <entry>
-                  <string>inputASName</string>
                   <null/>
                 </entry>
               </localMap>
@@ -465,14 +465,14 @@
               </localMap>
             </runtimeParams>
             <resourceType>gate.learning.LearningAPIMain</resourceType>
-            <resourceName>testProcessing</resourceName>
+            <resourceName>BatchLearning</resourceName>
             <initParams class="gate.util.persistence.MapPersistence">
               <mapType>gate.util.SimpleFeatureMapImpl</mapType>
               <localMap>
                 <entry>
                   <string>configFileURL</string>
                   <gate.util.persistence.PersistenceManager-URLHolder>
-                    <urlString>$relpath$../../../../../../../../G:/GrailsExportTest/gateSentiment/paum.xml</urlString>
+                    <urlString>$gatehome$plugins/Learning/paum.xml</urlString>
                   </gate.util.persistence.PersistenceManager-URLHolder>
                 </entry>
               </localMap>
