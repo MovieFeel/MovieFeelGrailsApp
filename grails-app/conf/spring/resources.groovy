@@ -12,4 +12,9 @@ beans = {
 
     }
 
+    fileExportService(com.movie.feel.services.FileExportService) {
+        grailsApplication = ref('grailsApplication')
+        // or use 'autowire'
+    }
+
 }

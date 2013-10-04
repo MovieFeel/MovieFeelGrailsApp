@@ -8,17 +8,6 @@ class RetrievalService {
     MovieSitesApi_I rottenTomatoesApi
     MovieSitesApi_I imdbApi
 
-    List<String> getAllAvailableMovieTitles() {
-        List<Movie> allMovies = Movie.list().toList()
-        List<String> allMovieTitles = new ArrayList<String>()
-
-        for (Movie m : allMovies) {
-            allMovieTitles.add(m.title)
-        }
-
-        return allMovieTitles
-    }
-
     List<Movie> searchForMovie(String title) {
 
         def urlTitle = Extras.formatTitle(title)
@@ -26,6 +15,13 @@ class RetrievalService {
         def rottenTomatoMovies = rottenTomatoesApi.searchForMoviesByTitle(urlTitle)
 
         return rottenTomatoMovies
+    }
+
+    void dummyMovies(){
+        rottenTomatoesApi.saveAllMoviesWithTitleLike("Toy Story")
+        rottenTomatoesApi.saveAllMoviesWithTitleLike("Lord of the Rings")
+        rottenTomatoesApi.saveAllMoviesWithTitleLike("Rocky")
+        rottenTomatoesApi.saveAllMoviesWithTitleLike("Star Wars")
     }
 
     List<Review> getReviewsForMovie(String title) {

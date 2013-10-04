@@ -17,11 +17,10 @@ import java.nio.channels.FileChannel
  */
 public class FileExportService {
 
-    private static  String exportRoot = "G://GrailsExportTest/"
-    private static  String exportResultRoot = "G://GrailsExportTest/Result/"
+    def static grailsApplication
 
     public static exportReviewsToFiles(Movie movie) {
-
+        String exportRoot = grailsApplication.config.moviefeel.output
 
         ByteBuffer buffer = ByteBuffer.allocate(1000000)
 
@@ -48,6 +47,8 @@ public class FileExportService {
     }
 
     public static exportProcessedReviewsToFiles(String movieTitle, String source, Corpus corpus) {
+        String exportRoot = grailsApplication.config.moviefeel.output
+
         File target = new File(exportRoot + movieTitle + "/" + "output" + ".txt")
         File parent = target.getParentFile()
 
@@ -80,6 +81,7 @@ public class FileExportService {
     }
 
     public static exportReviewsToFiles(String movieTitle, String source, List<Review> reviews) {
+        String exportRoot = grailsApplication.config.moviefeel.output
 
         ByteBuffer buffer = ByteBuffer.allocate(1000000)
 

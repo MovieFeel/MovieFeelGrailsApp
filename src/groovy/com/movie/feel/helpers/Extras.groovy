@@ -36,10 +36,10 @@ class Extras {
     }
 
     static Date formatDate(String date, String source) {
-        if(date)
-        if (source == Constants.RottenTomatoes) {
-            return new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH).parse(date);
-        }
+        if (date)
+            if (source == Constants.RottenTomatoes) {
+                return new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH).parse(date);
+            }
         return null;
     }
 

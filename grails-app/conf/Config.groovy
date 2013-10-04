@@ -90,4 +90,15 @@ log4j = {
            'net.sf.ehcache.hibernate'
 }
 
+grails.config.locations = ["file:C:\\MovieFeelConfig\\config.groovy"]
+// default location (Darius)
+moviefeel.output  = "G://GrailsExportTest/"
 
+
+
+
+// GCM
+android.gcm.api.key = 'AIzaSyAtC-BYNYetvtYHLSfNiWVzxUHiLlQkB9g'
+android.gcm.time.to.live=1419200
+android.gcm.delay.'while'.idle=false
+android.gcm.retries=3
