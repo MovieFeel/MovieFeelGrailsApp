@@ -26,7 +26,7 @@ class ReviewProcessingStage extends AbstractStage implements ReviewProcessingSta
 
         if(reviews != null && reviews.size() > 0)
         {
-            CurrentUserData.output = gate.anotateReviews(reviews)
+            CurrentUserData.output = gate.anotateReviews(CurrentUserData.movie.getTitle(), reviews)
         }
     }
 }

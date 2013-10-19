@@ -22,7 +22,20 @@ class Extras {
             aux = aux.replace("}", "]")
             return aux;
         } else return null
+    }
 
+    /**
+     * Format the string from JSON to correct HashMap string
+     * @param s - the input string
+     * @return formated hashmap string
+     */
+    static String formatJSON(String s) {
+        if (s != null) {
+            String aux = s.replace("[", "{")
+            aux = aux.replace("]", "}")
+            aux = aux.replace(",\\", ",")
+            return aux;
+        } else return null
     }
 
     static String formatTitle(String title) {

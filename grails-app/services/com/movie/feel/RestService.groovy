@@ -1,6 +1,8 @@
 package com.movie.feel
 
+import com.movie.feel.helpers.Extras
 import com.movie.feel.responses.InitialMovieDetails
+import org.codehaus.groovy.grails.web.json.JSONObject
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,8 +26,7 @@ class RestService {
             initialMovieDetails.synopsis = movie.synopsis
             initialMovieDetails.critics_consensus = movie.critics_consensus
             initialMovieDetails.mpaa_rating = movie.mpaa_rating
-            initialMovieDetails.ratings = movie.ratings
-            initialMovieDetails.runtime = movie.runtime
+            initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
 
             return initialMovieDetails
         }

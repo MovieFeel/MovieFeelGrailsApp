@@ -27,6 +27,8 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class GateService {
 
+    def static grailsApplication
+    private static boolean isInitialized
     private static final Logger log = Logger.getLogger(GateService.class);
 
     /**
@@ -50,7 +52,6 @@ class GateService {
      */
     private Corpus corpus;
 
-    def grailsApplication
     /**
      * Set the application that will be run over the documents.
      */
@@ -59,15 +60,18 @@ class GateService {
     }
 
     public GateService() {
-        def realPath = ServletContextHolder.getServletContext().getRealPath("/")
-         println(realPath)
-        Gate.pluginsHome = new File(realPath + "/WEB-INF/gate-files/plugins")
+        isInitialized = false
+    }
 
-        Gate.gateHome = new File(realPath + "/WEB-INF/gate-files/")
-        Gate.siteConfigFile = new File(realPath + "/WEB-INF/gate-files/gate.xml")
-        Gate.userConfigFile = new File(realPath + "/WEB-INF/gate-files/user-gate.xml")
+    public void InitGate() {
+        def realPath = grailsApplication.config.moviefeel.gateLocation
+        Gate.pluginsHome = new File(realPath + "/gate-files/plugins")
+
+        Gate.gateHome = new File(realPath + "/gate-files/")
+        Gate.siteConfigFile = new File(realPath + "/gate-files/gate.xml")
+        Gate.userConfigFile = new File(realPath + "/gate-files/user-gate.xml")
         Gate.init()
-         // load ANNIE as an application from a gapp file
+        // load ANNIE as an application from a gapp file
         // application =
         //    PersistenceManager.loadObjectFromFile(new File(new File(
         //              Gate.getPluginsHome(), ANNIEConstants.PLUGIN_DIR),
@@ -76,13 +80,14 @@ class GateService {
         // load the saved application
         application =
             (CorpusController) PersistenceManager.loadObjectFromFile(
-                    new File(realPath + "/WEB-INF/gate-files/trialapp.xgapp"));
+                    new File(realPath + "/gate-files/trialapp.xgapp"))
 
-        handlerId = nextId.getAndIncrement();
+        handlerId = nextId.getAndIncrement()
         log.info("init() for GateHandler " + handlerId);
         // create a corpus and give it to the controller
-        corpus = gate.Factory.newCorpus("trial");
-        application.setCorpus(corpus);
+        corpus = gate.Factory.newCorpus("trial")
+        application.setCorpus(corpus)
+        isInitialized = true
     }
 
 
@@ -94,6 +99,9 @@ class GateService {
 
     public String anotateReviews(List<Review> reviews)
     {
+        if(!isInitialized)
+            InitGate()
+
         String mime = "text/plain";
         List<Document> documents = new ArrayList<Document>()
         for (Review review : reviews)
@@ -112,7 +120,7 @@ class GateService {
             corpus.addAll(documents)
             application.execute();
 
-            FileExportService.exportProcessedReviewsToFiles("Toy Story3", "Rotten Tomatoes", corpus)
+            FileExportService.exportProcessedReviewsToFiles(corpus)
 
             return successMessage(documents)
             log.info("Application completed")
@@ -153,6 +161,9 @@ class GateService {
 
 
     public String testGate(String text) {
+        if(!isInitialized)
+            InitGate()
+
         log.info("Handler " + handlerId + " handling request");
         // the form also allows you to provide a mime type
         String mime = "text/plain";

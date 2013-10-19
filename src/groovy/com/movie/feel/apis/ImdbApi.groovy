@@ -106,8 +106,6 @@ class ImdbApi implements MovieSitesApi_I {
                             ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
 
                             m.extendedRuntimes = runtimes
-                            String firstRutime = m.extendedRuntimes.get(0).split(" ")[0]
-                            m.runtime = firstRutime.toString()
                         } else {
                             // treat the rating in a special way
                             HashMap<String, String> ratings = new HashMap<String, String>()
@@ -158,8 +156,6 @@ class ImdbApi implements MovieSitesApi_I {
                         ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
 
                         movie.extendedRuntimes = runtimes
-                        String firstRutime = movie.extendedRuntimes.get(0).split(" ")[0]
-                        movie.runtime = firstRutime.toString()
                     } else {
                         // treat the rating in a special way
                         HashMap<String, String> ratings = new HashMap<String, String>()
@@ -185,24 +181,29 @@ class ImdbApi implements MovieSitesApi_I {
 
     List<Review> getReviewsForMovie(Movie movie) {
         def reviewsNumber = getReviewsNumberUsingScrapping(movie)
+        if(reviewsNumber > 1000)
+            reviewsNumber = 1000
+        List<Review> reviews = Collections.synchronizedList(new ArrayList<Review>())
+        if (reviewsNumber > 0)
+        {
+            int numberOfThreads = 2
+            int halfReviews = reviewsNumber / 2
 
-        int numberOfThreads = 2
-        int halfReviews = reviewsNumber / 2
+            long initTime = System.currentTimeMillis()
 
-        long initTime = System.currentTimeMillis()
 
-        List<Review> reviews = Collections.synchronizedList(new ArrayList<Review>());
-        CountDownLatch latch = new CountDownLatch(numberOfThreads)
+            CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
-        for (int i = 0; i < reviewsNumber; i += halfReviews) {
-            Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews,reviews)
-            currentThread.run()
+            for (int i = 0; i < reviewsNumber; i += halfReviews) {
+                Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews,reviews)
+                currentThread.run()
+            }
+
+            latch.await()
+
+            println("Imdb Review Retrieval Threads time: ")
+            println(System.currentTimeMillis() - initTime)
         }
-
-        latch.await()
-
-        println("Imdb Review Retrieval Threads time: ")
-        println(System.currentTimeMillis() - initTime)
 
         return reviews
     }
@@ -214,10 +215,15 @@ class ImdbApi implements MovieSitesApi_I {
                 .userAgent("Mozilla").timeout(600000).get()
 
         Element reviewsNumberElement = doc.select(".star-box-details > br + a > span").first()
-        def reviewsNumberString = reviewsNumberElement.ownText().split()[0]
-        NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
-        Long parsedReviewsNumber = (Long) format.parse(reviewsNumberString);
-        return parsedReviewsNumber.toInteger()
+        if(reviewsNumberElement != null)
+        {
+            def reviewsNumberString = reviewsNumberElement.ownText().split()[0]
+            NumberFormat format = NumberFormat.getIntegerInstance(Locale.US);
+            Long parsedReviewsNumber = (Long) format.parse(reviewsNumberString);
+            return parsedReviewsNumber.toInteger()
+        }
+        else return 0
+
     }
 
     JSONElement doRequest(String url) {

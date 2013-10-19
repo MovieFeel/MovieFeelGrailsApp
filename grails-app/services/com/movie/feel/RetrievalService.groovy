@@ -94,4 +94,32 @@ class RetrievalService {
 
         return ImdbReviews
     }
+
+    List<Review> getReviewsForMovieImdbById(String id) {
+        List<Review> ImdbReviews = null
+
+        Movie movie = Movie.list().find{
+            it.imdbId ==  /(?i).*${id}.*/
+        }
+
+        // by convention, choose first in list, maybe implements something else to let the user decide which one to choose.
+        // the search should be done with some auto-completion involved
+        // in order to facilitate database search
+        if (movie != null) {
+            // Todo: find some logic here
+            if (movie.reviews?.size() > 0) {
+                return movie.reviews.asList()
+            } else
+                ImdbReviews = imdbApi.getReviewsForMovie(movie)
+        }
+        // no movies found with that title in the database
+        else {
+            def freshMovies = searchForImdbMovie(id)
+            if (freshMovies.size() > 0)
+            // Todo: if we automatically get the reviews when getting the movie we may want to do check if it already has reviews and return them.
+                ImdbReviews = imdbApi.getReviewsForMovie(freshMovies.get(0))
+        }
+
+        return ImdbReviews
+    }
 }

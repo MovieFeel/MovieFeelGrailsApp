@@ -36,7 +36,7 @@ public class FileExportService {
 
             for(int i=0; i< it.quote.length(); ++i)
             {
-                buffer.put( it.quote[i])
+                buffer.put( it.quote[i].getBytes())
             }
 
             buffer.flip()
@@ -46,10 +46,10 @@ public class FileExportService {
         }
     }
 
-    public static exportProcessedReviewsToFiles(String movieTitle, String source, Corpus corpus) {
+    public static exportProcessedReviewsToFiles(Corpus corpus) {
         String exportRoot = grailsApplication.config.moviefeel.output
 
-        File target = new File(exportRoot + movieTitle + "/" + "output" + ".txt")
+        File target = new File(exportRoot + "/" + "output" + ".txt")
         File parent = target.getParentFile()
 
         if(!parent.exists() && !parent.mkdirs())
@@ -86,24 +86,73 @@ public class FileExportService {
         ByteBuffer buffer = ByteBuffer.allocate(1000000)
 
         reviews.each   {
-            File target = new File(exportRoot + movieTitle + "/" + it.source + "/" + it.critic + ".txt")
-            File parent = target.getParentFile()
-            if(!parent.exists() && !parent.mkdirs())
+
+                String title = movieTitle.replaceAll("\\W+", "");
+                String critic = it.critic.replaceAll("\\W+", "");
+                File target = new File(exportRoot + title + "/" + it.source + "/" + critic + ".txt")
+                File parent = target.getParentFile()
+                if(!parent.exists() && !parent.mkdirs())
+                {
+
+                }
+                FileOutputStream fout = new FileOutputStream(target)
+                FileChannel fc = fout.getChannel()
+                if(it.quote != null)
+                {
+                    byte[] quoteStream = it.quote.bytes
+                    for(int i=0; i< quoteStream.size(); ++i)
+                    {
+                        buffer.put(quoteStream[i])
+                    }
+                }
+
+                buffer.flip()
+
+                fc.write(buffer)
+                buffer.clear()
+        }
+    }
+
+    public static exportRatedReviewsToFiles(String movieTitle, String source, List<Review> reviews) {
+        String exportRoot = grailsApplication.config.moviefeel.output
+
+        ByteBuffer buffer = ByteBuffer.allocate(1000000)
+
+        reviews.each   {
+
+            String title = movieTitle.replaceAll("\\W+", "");
+            String critic = it.critic.replaceAll("\\W+", "");
+
+            if(it.quote != null && it.rating != null)
             {
+                File target = new File(exportRoot + title + "Rated" + "/" + it.source + "/" + critic + ".txt")
+                File parent = target.getParentFile()
+                if(!parent.exists() && !parent.mkdirs())
+                {
 
+                }
+                FileOutputStream fout = new FileOutputStream(target)
+                FileChannel fc = fout.getChannel()
+
+
+                byte[] quoteStream = it.quote.bytes
+                for(int i=0; i< quoteStream.size(); ++i)
+                {
+                    buffer.put(quoteStream[i])
+                }
+
+                byte[] ratingStream = ("= Rating-" + it.rating).bytes
+
+                for(int i=0; i< ratingStream.size(); ++i)
+                {
+                    buffer.put(ratingStream[i])
+                }
+
+                buffer.flip()
+
+                fc.write(buffer)
+                buffer.clear()
             }
-            FileOutputStream fout = new FileOutputStream(target)
-            FileChannel fc = fout.getChannel()
-            byte[] quoteSteam = it.quote.bytes
-            for(int i=0; i< quoteSteam.size(); ++i)
-            {
-                buffer.put(quoteSteam[i])
-            }
-
-            buffer.flip()
-
-            fc.write(buffer)
-            buffer.clear()
         }
     }
 }

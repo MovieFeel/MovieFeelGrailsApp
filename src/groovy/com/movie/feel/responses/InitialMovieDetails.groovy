@@ -1,5 +1,7 @@
 package com.movie.feel.responses
 
+import org.codehaus.groovy.grails.web.json.JSONObject
+
 /**
  * Created with IntelliJ IDEA.
  * User: Alex
@@ -9,7 +11,7 @@ package com.movie.feel.responses
  */
 class InitialMovieDetails {
 
-    String ratings
+    JSONObject ratings
     String mpaa_rating
     String runtime
     String critics_consensus

@@ -35,14 +35,5 @@
 		</property>
 	</bean>
 
-    <gate:init gate-home="/WEB-INF/gate-files/"
-     plugins-home="/WEB-INF/gate-files/plugins"
-     site-config-file="/WEB-INF/gate-files/gate.xml"
-     user-config-file="/WEB-INF/gate-files/user-gate.xml">
-     <gate:preload-plugins>
-     <value>/WEB-INF/gate-files/plugins/ANNIE</value>
-     </gate:preload-plugins>
-     </gate:init>
-
 
 </beans>

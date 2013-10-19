@@ -73,6 +73,22 @@ class RetrievalServiceTests {
         assertTrue(toyStoryReviews.size() > 0)
     }
 
+    @Test
+    void testImdbReviewExport() {
+        def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie")
+        def toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+        FileExportService.exportReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
+        assertTrue(toyStoryReviews.size() > 0)
+    }
+
+    @Test
+    void testImdbRatedReviewExport() {
+        def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie")
+        def toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+        FileExportService.exportRatedReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
+        assertTrue(toyStoryReviews.size() > 0)
+    }
+
 
     @Test
     void testRottenTomatoesReviewProcessing() {

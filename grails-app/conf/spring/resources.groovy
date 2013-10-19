@@ -17,4 +17,9 @@ beans = {
         // or use 'autowire'
     }
 
+    gateService(com.movie.feel.services.GateService) {
+        grailsApplication = ref('grailsApplication')
+        // or use 'autowire'
+    }
+
 }

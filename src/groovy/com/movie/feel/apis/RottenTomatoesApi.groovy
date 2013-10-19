@@ -81,6 +81,8 @@ class RottenTomatoesApi implements MovieSitesApi_I {
             movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
             movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
             movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
+            if (movie.imdbId == null && jsonMovie?.get("alternate_ids") != null)
+                movie.imdbId = new JSONObject(jsonMovie?.get("alternate_ids")).get("imdb")
 
             movie.validate()
             if(movie.validate()) {
@@ -147,7 +149,7 @@ class RottenTomatoesApi implements MovieSitesApi_I {
 
         movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
         movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
-        movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
+        movie.ratings = jsonMovie?.get("ratings")?.toString()
 
         movie.validate()
         if (movie.validate())
