@@ -27,7 +27,7 @@ class RestService {
             initialMovieDetails.critics_consensus = movie.critics_consensus
             initialMovieDetails.mpaa_rating = movie.mpaa_rating
             initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
-
+            initialMovieDetails.posters = new JSONObject(Extras.formatJSON(movie.posters))
             return initialMovieDetails
         }
         return new InitialMovieDetails()

@@ -16,5 +16,6 @@ class InitialMovieDetails {
     String runtime
     String critics_consensus
     String synopsis
+    JSONObject posters
 
 }
