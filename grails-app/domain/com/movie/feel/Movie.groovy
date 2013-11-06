@@ -16,9 +16,12 @@ class Movie {
     String posters
     ArrayList<String> extendedRuntimes
 
-    // Todo: think of better name
-    // Todo: we're gonna have a 'feelings' enum, right?
-    String generalFeeling
+    String processedRating
+    String fearRating
+    String angerRating
+    String joyRating
+    String surpriseRating
+    String disgustRating
 
     static hasMany = [reviews: Review]
 
@@ -39,7 +42,13 @@ class Movie {
         synopsis(size: 1..2000)
 
         // for now
-        generalFeeling nullable: true
+        processedRating nullable: true
+        fearRating nullable: true
+        angerRating nullable: true
+        joyRating nullable: true
+        surpriseRating nullable: true
+        processedRating nullable: true
+        disgustRating nullable: true
     }
 
     static mapping = {
