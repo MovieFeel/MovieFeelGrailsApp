@@ -3,6 +3,7 @@ package com.movie.feel
 import com.movie.feel.helpers.Extras
 import com.movie.feel.pipeline.PipelineWrapper
 import com.movie.feel.responses.InitialMovieDetails
+import com.movie.feel.responses.RatingsDetails
 import org.codehaus.groovy.grails.web.json.JSONObject
 
 /**
@@ -15,7 +16,6 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 class RestService {
 
     def retrievalService
-    def fileExportService
 
     List<String> getAllMovieTitles() {
         def movieTitles = new ArrayList<String>()
@@ -38,6 +38,28 @@ class RestService {
         }
     }
 
+    String getMovieRating(String title) {
+        def movie = Movie.findByTitle(title)
+        if (movie != null) {
+            PipelineWrapper p = new PipelineWrapper()
+            p.auxGetReviewsForAllMovies(movie)
+            return getRatingsForMovie(movie)
+        } else {
+            return new RatingsDetails()
+        }
+    }
+
+    private RatingsDetails getRatingsForMovie(Movie movie) {
+        def ratingsDetails = new RatingsDetails()
+        movie.properties.each {
+            String key = it.key;
+            if (ratingsDetails.properties.containsKey(key)) {
+                ratingsDetails.setProperty(key, movie.getProperty(key))
+            }
+        }
+        return ratingsDetails
+    }
+
     private InitialMovieDetails getDetailsForMovie(Movie movie) {
         def initialMovieDetails = new InitialMovieDetails()
         initialMovieDetails.synopsis = movie.synopsis
@@ -48,13 +70,4 @@ class RestService {
         return initialMovieDetails
     }
 
-    String getMovieRating(String title) {
-        def movie = Movie.findByTitle(title)
-        if (movie != null) {
-            PipelineWrapper p = new PipelineWrapper()
-            p.auxGetReviewsForAllMovies(movie)
-        } else {
-
-        }
-    }
 }

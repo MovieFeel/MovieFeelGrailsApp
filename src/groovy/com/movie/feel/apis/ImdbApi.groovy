@@ -210,6 +210,7 @@ class ImdbApi implements MovieSitesApi_I {
 
     //TODO: Make the dude include it in the api
     int getReviewsNumberUsingScrapping(Movie movie) {
+        println movie.imdbId
         String url = "http://www.imdb.com/title/" + movie.imdbId
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla").timeout(600000).get()
