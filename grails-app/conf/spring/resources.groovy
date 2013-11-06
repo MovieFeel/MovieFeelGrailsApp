@@ -6,20 +6,19 @@ import com.movie.feel.helpers.Constants
 beans = {
 
     retrievalService(com.movie.feel.RetrievalService) {
-
         rottenTomatoesApi = RottenTomatoesApi.getInstance(Constants.RottenTomatoesApiKey, Constants.RottenTomatoesMoviePageLimit, Constants.RottenTomatoesReviewPageLimit)
         imdbApi = ImdbApi.getInstance(Constants.RottenTomatoesMoviePageLimit, Constants.IMDB_PLOT_TYPE)
 
     }
 
-    fileExportService(com.movie.feel.services.FileExportService) {
+    gateService(com.movie.feel.services.GateService) {
         grailsApplication = ref('grailsApplication')
+        fileExportService = ref('fileExportService')
         // or use 'autowire'
     }
 
-    gateService(com.movie.feel.services.GateService) {
-        grailsApplication = ref('grailsApplication')
-        // or use 'autowire'
+    reviewRetrieverStage(com.movie.feel.pipeline.ReviewRetrieverStage){
+        fileExportService = ref('fileExportService')
     }
 
 }

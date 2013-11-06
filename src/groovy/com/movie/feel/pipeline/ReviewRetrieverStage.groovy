@@ -4,7 +4,6 @@ import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.interfaces.pipeline.ReviewRetrieverStage_I
-import com.movie.feel.services.FileExportService
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +13,8 @@ import com.movie.feel.services.FileExportService
  * To change this template use File | Settings | File Templates.
  */
 class ReviewRetrieverStage extends AbstractStage implements ReviewRetrieverStage_I {
+
+    def static fileExportService
 
     @Override
     void startStage() {
@@ -25,7 +26,7 @@ class ReviewRetrieverStage extends AbstractStage implements ReviewRetrieverStage
         CurrentUserData.movie.reviews = synchronizeLists(imdbReviews, rottenTomatoesReviews)
 
         //Export the movie reviews to a file
-        FileExportService.exportReviewsToFiles(movie)
+        fileExportService.exportReviewsToFiles(movie)
     }
 
     private ArrayList<Review> synchronizeLists(List<Review> imdbReviews, List<Review> rottenTomatoesReviews) {
