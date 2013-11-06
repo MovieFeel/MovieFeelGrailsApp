@@ -80,7 +80,7 @@ class GateService {
         // load the saved application
         application =
             (CorpusController) PersistenceManager.loadObjectFromFile(
-                    new File(realPath + "/gate-files/trialapp.xgapp"))
+                    new File(realPath + "/gate-files/gateApp.xgapp"))
 
         handlerId = nextId.getAndIncrement()
         log.info("init() for GateHandler " + handlerId);

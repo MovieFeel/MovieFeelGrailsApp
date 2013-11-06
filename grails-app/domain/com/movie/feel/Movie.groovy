@@ -7,7 +7,6 @@ class Movie {
     String title
     String year
     String mpaa_rating
-    String runtime
     String critics_consensus
     String synopsis
 
@@ -25,7 +24,6 @@ class Movie {
 
     static constraints = {
         reviews lazy: false
-        runtime nullable: true
         mpaa_rating nullable: true
         rottenTomatoId nullable: true
         imdbId nullable: true
