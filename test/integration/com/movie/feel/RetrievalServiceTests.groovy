@@ -94,52 +94,52 @@ class RetrievalServiceTests {
     void testRottenTomatoesReviewProcessing() {
         def toyStoryMovies = retrievalService.searchForMovie("Scream 4")
         def toyStoryReviews = retrievalService.getReviewsForMovie("Scream 4")
-
+        def movie = retrievalService.searchForImdbMovie("Scary Movie 5")
         GateService gate = new GateService()
-        gate.anotateReviews(toyStoryReviews)
+        gate.anotateReviews(movie, toyStoryReviews)
     }
 
     @Test
-    void testRottenTomatoesReviewProcessingBadMovie() {
-        def toyStoryMovies = retrievalService.searchForMovie("Scary Movie 5")
-        def toyStoryReviews = retrievalService.getReviewsForMovie("Scary Movie 5")
-
+    void testImdbReviewProcessing() {
+        def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie 5")
+        def toyStoryReviews = retrievalService.getReviewsForMovieImdb("Scary Movie 5")
+        def movie = Movie.list().first()
         GateService gate = new GateService()
-        gate.anotateReviews(toyStoryReviews)
+        gate.anotateReviews(movie, toyStoryReviews)
     }
 
     @Test
     void exportTrainingReviews() {
-      def toyStoryMovies = retrievalService.searchForImdbMovie("The Expendables")
-      def toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+      def toyStoryMovies = retrievalService.searchForMovie("The Expendables")
+      def toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
 
-     // FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+       fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
 
-       // toyStoryMovies = retrievalService.searchForImdbMovie("Superbad")
-       // toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+       toyStoryMovies = retrievalService.searchForMovie("Superbad")
+       toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
 
-       // FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+       fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
 
-        //toyStoryMovies = retrievalService.searchForImdbMovie("The hangover")
-       // toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
-
-        //FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
-
-
-        //toyStoryMovies = retrievalService.searchForImdbMovie("Price of persia")
-        //toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
-
-        //FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
-
-
-        toyStoryMovies = retrievalService.searchForImdbMovie("The departed")
-        toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+        toyStoryMovies = retrievalService.searchForMovie("The hangover")
+        toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
 
         fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
 
 
-        toyStoryMovies = retrievalService.searchForImdbMovie("Scream 4")
-        toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
+        toyStoryMovies = retrievalService.searchForMovie("Price of persia")
+        toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
+
+        fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+
+
+        toyStoryMovies = retrievalService.searchForMovie("The departed")
+        toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
+
+        fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+
+
+        toyStoryMovies = retrievalService.searchForMovie("Scream 4")
+        toyStoryReviews = retrievalService.getReviewsForMovie(toyStoryMovies.get(0).getTitle())
 
         fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
     }

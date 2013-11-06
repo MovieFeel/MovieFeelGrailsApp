@@ -35,6 +35,14 @@ class GateService {
     private static boolean isInitialized
     private static final Logger log = Logger.getLogger(GateService.class);
 
+    class ratingElements {
+        public int rating;
+        public int anger;
+        public int joy;
+        public int surprise;
+        public int disgust;
+    };
+
     /**
      * Atomic counter that we use to obtain a unique ID for each handler
      * instance.
@@ -101,7 +109,7 @@ class GateService {
         gate.Factory.deleteResource(application);
     }
 
-    public String anotateReviews(List<Review> reviews)
+    public String anotateReviews(Movie movie, List<Review> reviews)
     {
         if(!isInitialized)
             InitGate()
@@ -124,7 +132,8 @@ class GateService {
             corpus.addAll(documents)
             application.execute();
 
-            fileExportService.exportProcessedReviewsToFiles(corpus)
+            //fileExportService.exportProcessedReviewsToFiles(corpus)
+            processReviews(movie, corpus)
 
             return successMessage(documents)
             log.info("Application completed")
@@ -226,22 +235,8 @@ class GateService {
         return response;
     }
 
-
-    public processReviews(Corpus corpus) {
-        String exportRoot = grailsApplication.config.moviefeel.output
-
-        File target = new File(exportRoot + "/" + "output" + ".txt")
-        File parent = target.getParentFile()
-
-        if(!parent.exists() && !parent.mkdirs())
-        {
-
-        }
-
-        FileOutputStream fout = new FileOutputStream(target)
-        FileChannel fc = fout.getChannel()
-        ByteBuffer buffer = ByteBuffer.allocate(10000000)
-
+    public processReviews(Movie movie, Corpus corpus) {
+        def reviews = new ArrayList<ratingElements>();
         corpus.each   {
 
             def contentStream = it.getContent().toString()
@@ -250,18 +245,36 @@ class GateService {
             String ratingStream = "";
             if(annotation != null)
             {
-                ratingStream = annotation.features.get("rating").toString()
+                def ratingElements = new ratingElements()
+                ratingElements.rating = Integer.getInteger(annotation.features.get("rating"))
+                ratingElements.anger = Integer.getInteger(annotation.features.get("anger"))
+                ratingElements.disgust = Integer.getInteger(annotation.features.get("disgust"))
+                ratingElements.joy = Integer.getInteger(annotation.features.get("joy"))
+                ratingElements.surprise = Integer.getInteger(annotation.features.get("surprise"))
+                reviews.add(ratingElements)
             }
-            def output = (contentStream + " - " + ratingStream + "\n").bytes
-            for(int i=0; i< output.size(); ++i)
-            {
-                buffer.put(output[i])
-            }
+            def totalRating = 0
+            def totalAnger = 0
+            def totalDisgust = 0
+            def totalSurprise = 0
+            def totalJoy = 0
+            reviews.each
+                    {
+                        totalRating+= it.rating
+                        totalAnger+= it.anger
+                        totalDisgust+= it.disgust
+                        totalSurprise+= it.surprise
+                        totalJoy+= it.joy
+                    }
 
-            buffer.flip()
-            fc.write(buffer)
+            movie.angerRating = (totalAnger / reviews.size()).toString()
+            movie.joyRating = (totalJoy / reviews.size()).toString()
+            movie.disgustRating = (totalDisgust / reviews.size()).toString()
+            movie.surpriseRating = (totalSurprise / reviews.size()).toString()
+            movie.processedRating = (totalRating / reviews.size()).toString()
 
-            buffer.clear()
+            if(movie.validate())
+                movie.save()
         }
     }
 }
