@@ -1,6 +1,5 @@
 package com.movie.feel
 
-import com.movie.feel.services.FileExportService
 import com.movie.feel.services.GateService
 import org.junit.After
 import org.junit.Before
@@ -12,6 +11,7 @@ import static org.junit.Assert.assertTrue
 class RetrievalServiceTests {
 
     def retrievalService
+    def fileExportService
 
     @Before
     void setUp() {
@@ -69,7 +69,7 @@ class RetrievalServiceTests {
     void testRottenTomatoesReviewExport() {
         def toyStoryMovies = retrievalService.searchForMovie("Toy Story 3")
         def toyStoryReviews = retrievalService.getReviewsForMovie("Toy Story 3")
-        FileExportService.exportReviewsToFiles("Toy Story 3", "RottenTomatoes", toyStoryReviews)
+        fileExportService.exportReviewsToFiles("Toy Story 3", "RottenTomatoes", toyStoryReviews)
         assertTrue(toyStoryReviews.size() > 0)
     }
 
@@ -77,7 +77,7 @@ class RetrievalServiceTests {
     void testImdbReviewExport() {
         def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie")
         def toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
-        FileExportService.exportReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
+        fileExportService.exportReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
         assertTrue(toyStoryReviews.size() > 0)
     }
 
@@ -85,7 +85,7 @@ class RetrievalServiceTests {
     void testImdbRatedReviewExport() {
         def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie")
         def toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
-        FileExportService.exportRatedReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
+        fileExportService.exportRatedReviewsToFiles(toyStoryMovies.get(0).title, "Imdb", toyStoryReviews)
         assertTrue(toyStoryReviews.size() > 0)
     }
 

@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger
  */
 class GateService {
 
+    def static fileExportService
     def static grailsApplication
     private static boolean isInitialized
     private static final Logger log = Logger.getLogger(GateService.class);
@@ -120,7 +121,7 @@ class GateService {
             corpus.addAll(documents)
             application.execute();
 
-            FileExportService.exportProcessedReviewsToFiles(corpus)
+            fileExportService.exportProcessedReviewsToFiles(corpus)
 
             return successMessage(documents)
             log.info("Application completed")
