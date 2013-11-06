@@ -1,6 +1,7 @@
 package com.movie.feel
 
 import com.movie.feel.helpers.Extras
+import com.movie.feel.pipeline.PipelineWrapper
 import com.movie.feel.responses.InitialMovieDetails
 import org.codehaus.groovy.grails.web.json.JSONObject
 
@@ -13,6 +14,9 @@ import org.codehaus.groovy.grails.web.json.JSONObject
  */
 class RestService {
 
+    def retrievalService
+    def fileExportService
+
     List<String> getAllMovieTitles() {
         def movieTitles = new ArrayList<String>()
         Movie.list().each { movieTitles.add(it.title + " (" + it.year + ")") }
@@ -22,25 +26,35 @@ class RestService {
     InitialMovieDetails getInitialMovieDetailsForTitle(String title) {
         def movie = Movie.findByTitle(title)
         if (movie != null) {
-            def initialMovieDetails = new InitialMovieDetails()
-            initialMovieDetails.synopsis = movie.synopsis
-            initialMovieDetails.critics_consensus = movie.critics_consensus
-            initialMovieDetails.mpaa_rating = movie.mpaa_rating
-            initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
-            initialMovieDetails.posters = new JSONObject(Extras.formatJSON(movie.posters))
-            return initialMovieDetails
+            return getDetailsForMovie(movie)
+        } else {
+            def movies = retrievalService.searchForImdbMovie(title)
+            if (!movies.isEmpty()) {
+                movie = movies.get(0)
+                return getDetailsForMovie(movie)
+            } else {
+                return new InitialMovieDetails()
+            }
         }
-        return new InitialMovieDetails()
+    }
+
+    private InitialMovieDetails getDetailsForMovie(Movie movie) {
+        def initialMovieDetails = new InitialMovieDetails()
+        initialMovieDetails.synopsis = movie.synopsis
+        initialMovieDetails.critics_consensus = movie.critics_consensus
+        initialMovieDetails.mpaa_rating = movie.mpaa_rating
+        initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
+        initialMovieDetails.posters = new JSONObject(Extras.formatJSON(movie.posters))
+        return initialMovieDetails
     }
 
     String getMovieRating(String title) {
         def movie = Movie.findByTitle(title)
         if (movie != null) {
-
-
+            PipelineWrapper p = new PipelineWrapper()
+            p.auxGetReviewsForAllMovies(movie)
+        } else {
 
         }
-        return movie.generalFeeling
-
     }
 }

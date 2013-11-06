@@ -3,6 +3,7 @@ package com.movie.feel.pipeline
 import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.CurrentUserData
+import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.pipeline.ReviewRetrieverStage_I
 
 /**
@@ -23,16 +24,11 @@ class ReviewRetrieverStage extends AbstractStage implements ReviewRetrieverStage
         def imdbReviews = imdbApi.getReviewsForMovie(movie)
         def rottenTomatoesReviews = rottenTomatoesApi.getReviewsForMovie(movie)
 
-        CurrentUserData.movie.reviews = synchronizeLists(imdbReviews, rottenTomatoesReviews)
+        CurrentUserData.movie.reviews = Extras.synchronizeLists(imdbReviews, rottenTomatoesReviews)
 
         //Export the movie reviews to a file
         fileExportService.exportReviewsToFiles(movie)
     }
 
-    private ArrayList<Review> synchronizeLists(List<Review> imdbReviews, List<Review> rottenTomatoesReviews) {
-        def allReviews = new ArrayList<Review>()
-        allReviews.addAll(imdbReviews)
-        allReviews.addAll(rottenTomatoesReviews)
-        return allReviews
-    }
+
 }

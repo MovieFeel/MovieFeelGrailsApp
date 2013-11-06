@@ -1,5 +1,7 @@
 package com.movie.feel.helpers
 
+import com.movie.feel.Review
+
 import java.text.SimpleDateFormat
 
 /**
@@ -56,4 +58,10 @@ class Extras {
         return null;
     }
 
+    static ArrayList<Review> synchronizeLists(List<Review> imdbReviews, List<Review> rottenTomatoesReviews) {
+        def allReviews = new ArrayList<Review>()
+        allReviews.addAll(imdbReviews)
+        allReviews.addAll(rottenTomatoesReviews)
+        return allReviews
+    }
 }

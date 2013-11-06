@@ -2,6 +2,8 @@ package com.movie.feel.pipeline
 
 import com.movie.feel.Movie
 import com.movie.feel.Review
+import com.movie.feel.apis.ImdbApi
+import com.movie.feel.apis.RottenTomatoesApi
 import com.movie.feel.helpers.Constants
 import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.helpers.Extras
@@ -18,7 +20,7 @@ import com.movie.feel.interfaces.observer.Subject_I
 class PipelineWrapper implements Observer_I {
 
     PipelineWrapper() {
-        this.state =  Constants.STATE_IDLE
+        this.state = Constants.STATE_IDLE
     }
 
     private static HashMap<String, AbstractStage> stages
@@ -35,8 +37,16 @@ class PipelineWrapper implements Observer_I {
     String state
     String status
     def notificationService
-
+    def fileExportService
     String title
+
+    public void auxGetReviewsForAllMovies(Movie movie) {
+        def imdbReviews = ImdbApi.getInstance().getReviewsForMovie(movie)
+        def rottenTomatoesReviews = RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
+
+        def reviews = Extras.synchronizeLists(imdbReviews, rottenTomatoesReviews)
+        fileExportService.exportReviewsToFiles(movie)
+    }
 
 
     public void startPipeline(String title) {
