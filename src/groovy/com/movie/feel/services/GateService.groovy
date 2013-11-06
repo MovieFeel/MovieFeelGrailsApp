@@ -2,6 +2,7 @@ package com.movie.feel.services
 
 import com.movie.feel.Movie
 import com.movie.feel.Review
+import gate.AnnotationSet
 import gate.Corpus
 import gate.CorpusController
 import gate.Document
@@ -14,8 +15,10 @@ import gate.creole.SerialAnalyserController
 import gate.util.persistence.PersistenceManager
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
-import gate.persist.SerialDataStore;
+import gate.persist.SerialDataStore
 
+import java.nio.ByteBuffer
+import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -221,5 +224,44 @@ class GateService {
         String response = "";
         response+="<h1>Error in GATE handler " + handlerId + "</h1>";
         return response;
+    }
+
+
+    public processReviews(Corpus corpus) {
+        String exportRoot = grailsApplication.config.moviefeel.output
+
+        File target = new File(exportRoot + "/" + "output" + ".txt")
+        File parent = target.getParentFile()
+
+        if(!parent.exists() && !parent.mkdirs())
+        {
+
+        }
+
+        FileOutputStream fout = new FileOutputStream(target)
+        FileChannel fc = fout.getChannel()
+        ByteBuffer buffer = ByteBuffer.allocate(10000000)
+
+        corpus.each   {
+
+            def contentStream = it.getContent().toString()
+            def test = ((AnnotationSet)it.namedAnnotationSets.get("Output"))
+            def annotation = test.find {it.type.contentEquals("paragraph")}
+            String ratingStream = "";
+            if(annotation != null)
+            {
+                ratingStream = annotation.features.get("rating").toString()
+            }
+            def output = (contentStream + " - " + ratingStream + "\n").bytes
+            for(int i=0; i< output.size(); ++i)
+            {
+                buffer.put(output[i])
+            }
+
+            buffer.flip()
+            fc.write(buffer)
+
+            buffer.clear()
+        }
     }
 }

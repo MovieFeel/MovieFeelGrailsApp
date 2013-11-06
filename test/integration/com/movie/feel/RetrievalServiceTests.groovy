@@ -135,12 +135,12 @@ class RetrievalServiceTests {
         toyStoryMovies = retrievalService.searchForImdbMovie("The departed")
         toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
 
-        FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+        fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
 
 
         toyStoryMovies = retrievalService.searchForImdbMovie("Scream 4")
         toyStoryReviews = retrievalService.getReviewsForMovieImdb(toyStoryMovies.get(0).getTitle())
 
-        FileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
+        fileExportService.exportTrainingReviews(toyStoryMovies.get(0).title, toyStoryReviews)
     }
 }
