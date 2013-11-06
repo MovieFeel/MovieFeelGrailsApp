@@ -32,4 +32,15 @@ class RestService {
         }
         return new InitialMovieDetails()
     }
+
+    String getMovieRating(String title) {
+        def movie = Movie.findByTitle(title)
+        if (movie != null) {
+
+
+
+        }
+        return movie.generalFeeling
+
+    }
 }
