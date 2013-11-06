@@ -102,11 +102,7 @@ class ImdbApi implements MovieSitesApi_I {
                     if (map.containsKey(jsonElement.getKey())) {
                         if (!jsonElement.getKey().equals("rating") && !jsonElement.getKey().equals("runtime"))
                             m.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
-                        else if (jsonElement.getKey().equals("runtime")) {
-                            ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
-
-                            m.extendedRuntimes = runtimes
-                        } else {
+                        else {
                             // treat the rating in a special way
                             HashMap<String, String> ratings = new HashMap<String, String>()
                             ratings.put("critics_rating", "")
@@ -152,11 +148,7 @@ class ImdbApi implements MovieSitesApi_I {
                 if (map.containsKey(jsonElement.getKey())) {
                     if (!jsonElement.getKey().equals("rating") && !jsonElement.getKey().equals("runtime"))
                         movie.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
-                    else if (jsonElement.getKey().equals("runtime")) {
-                        ArrayList<String> runtimes = (ArrayList<String>) jsonElement.getValue()
-
-                        movie.extendedRuntimes = runtimes
-                    } else {
+                    else {
                         // treat the rating in a special way
                         HashMap<String, String> ratings = new HashMap<String, String>()
                         ratings.put("critics_rating", "")

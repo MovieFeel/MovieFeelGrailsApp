@@ -239,42 +239,47 @@ class GateService {
         def reviews = new ArrayList<ratingElements>();
         corpus.each   {
 
-            def contentStream = it.getContent().toString()
-            def test = ((AnnotationSet)it.namedAnnotationSets.get("Output"))
-            def annotation = test.find {it.type.contentEquals("paragraph")}
-            String ratingStream = "";
-            if(annotation != null)
+            def annotationSet = ((AnnotationSet)it.namedAnnotationSets.get("Output"))
+            def annotationJoy = annotationSet.find {it.features.find{it.key.equals("joy")}}.features.get("joy")
+            def annotationAnger = annotationSet.find {it.features.find{it.key.equals("anger")}}.features.get("anger")
+            def annotationDisgust = annotationSet.find {it.features.find{it.key.equals("disgust")}}.features.get("disgust")
+            def annotationSurprise = annotationSet.find {it.features.find{it.key.equals("surprise")}}.features.get("surprise")
+            def annotationFear = annotationSet.find {it.features.find{it.key.equals("fear")}}.features.get("fear")
+            def annotationRating = annotationSet.find {it.features.find{it.key.equals("rating")}}.features.get("rating")
+
+            if(annotationSet != null)
             {
                 def ratingElements = new ratingElements()
-                ratingElements.rating = Integer.getInteger(annotation.features.get("rating"))
-                ratingElements.anger = Integer.getInteger(annotation.features.get("anger"))
-                ratingElements.disgust = Integer.getInteger(annotation.features.get("disgust"))
-                ratingElements.joy = Integer.getInteger(annotation.features.get("joy"))
-                ratingElements.surprise = Integer.getInteger(annotation.features.get("surprise"))
+                ratingElements.rating = annotationRating as int
+                ratingElements.anger = annotationAnger as int
+                ratingElements.disgust = annotationDisgust as int
+                ratingElements.joy = annotationJoy as int
+                ratingElements.surprise = annotationSurprise as int
                 reviews.add(ratingElements)
             }
-            def totalRating = 0
-            def totalAnger = 0
-            def totalDisgust = 0
-            def totalSurprise = 0
-            def totalJoy = 0
-            reviews.each
-                    {
-                        totalRating+= it.rating
-                        totalAnger+= it.anger
-                        totalDisgust+= it.disgust
-                        totalSurprise+= it.surprise
-                        totalJoy+= it.joy
-                    }
-
-            movie.angerRating = (totalAnger / reviews.size()).toString()
-            movie.joyRating = (totalJoy / reviews.size()).toString()
-            movie.disgustRating = (totalDisgust / reviews.size()).toString()
-            movie.surpriseRating = (totalSurprise / reviews.size()).toString()
-            movie.processedRating = (totalRating / reviews.size()).toString()
-
-            if(movie.validate())
-                movie.save()
         }
+
+        def totalRating = 0
+        def totalAnger = 0
+        def totalDisgust = 0
+        def totalSurprise = 0
+        def totalJoy = 0
+        reviews.each
+        {
+            totalRating+= it.rating
+            totalAnger+= it.anger
+            totalDisgust+= it.disgust
+            totalSurprise+= it.surprise
+            totalJoy+= it.joy
+        }
+
+        movie.angerRating = (totalAnger / reviews.size()).toString()
+        movie.joyRating = (totalJoy / reviews.size()).toString()
+        movie.disgustRating = (totalDisgust / reviews.size()).toString()
+        movie.surpriseRating = (totalSurprise / reviews.size()).toString()
+        movie.processedRating = (totalRating / reviews.size()).toString()
+
+        if(movie.validate())
+           movie.save()
     }
 }

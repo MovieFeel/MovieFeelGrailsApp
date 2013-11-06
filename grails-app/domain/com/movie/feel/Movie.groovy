@@ -14,7 +14,6 @@ class Movie {
     String release_dates
     String ratings
     String posters
-    ArrayList<String> extendedRuntimes
 
     String processedRating
     String fearRating
