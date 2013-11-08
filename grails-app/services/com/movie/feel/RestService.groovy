@@ -40,10 +40,9 @@ class RestService {
     }
 
     RatingsDetails getMovieRating(String title) {
-        def movie = Movie.findByTitle(title)
+        def movie = Movie.findByTitleLike(title)
         if (movie != null) {
-            if(movie.processedRating != null)
-            {
+            if (movie.processedRating != null) {
                 return getRatingsForMovie(movie)
             }
             PipelineWrapper p = new PipelineWrapper()
@@ -67,11 +66,12 @@ class RestService {
 
     private InitialMovieDetails getDetailsForMovie(Movie movie) {
         def initialMovieDetails = new InitialMovieDetails()
+        initialMovieDetails.title = movie.title
         initialMovieDetails.synopsis = movie.synopsis == null ? movie.plot_simple : movie.synopsis
         initialMovieDetails.mpaa_rating = movie.rating
         initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
         initialMovieDetails.posters = new JSONObject(Extras.formatJSON(movie.posters))
-       // initialMovieDetails.actors = new JSONArray(movie.actors)
+        // initialMovieDetails.actors = new JSONArray(movie.actors)
         //initialMovieDetails.genres = new JSONArray(movie.genres)
         //initialMovieDetails.directors = new JSONArray(movie.directors)
         return initialMovieDetails

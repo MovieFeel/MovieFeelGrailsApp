@@ -12,6 +12,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject
  */
 class InitialMovieDetails {
 
+    String title
     JSONObject ratings
     String mpaa_rating
     String synopsis

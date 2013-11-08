@@ -20,9 +20,15 @@ import com.movie.feel.services.GateService
  */
 class PipelineWrapper implements Observer_I {
 
+    String state
+    String status
+    def notificationService
+    String title
+    GateService gate
+
     PipelineWrapper() {
         this.state = Constants.STATE_IDLE
-        gate = new GateService()
+        gate = GateService.getInstance()
     }
 
     private static HashMap<String, AbstractStage> stages
@@ -36,19 +42,15 @@ class PipelineWrapper implements Observer_I {
         stages[Constants.STAGE_REVIEW_RESPONSE] = new ReviewResponseStage()
     }
 
-    String state
-    String status
-    def notificationService
-    def static fileExportService
-    String title
-
-    GateService gate
-
     public void auxGetReviewsForAllMovies(Movie movie) {
-        def imdbReviews = ImdbApi.getInstance().getReviewsForMovie(movie)
-        def rottenTomatoesReviews = RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
+        def reviews
+        if (movie.reviews.isEmpty()) {
+            def imdbReviews = ImdbApi.getInstance().getReviewsForMovie(movie)
+            def rottenTomatoesReviews = RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
 
-        def reviews = Extras.synchronizeLists(imdbReviews, rottenTomatoesReviews)
+            reviews = Extras.synchronizeLists(imdbReviews, rottenTomatoesReviews)
+        } else
+            reviews = movie.reviews.toList()
         gate.anotateReviews(movie, reviews)
     }
 

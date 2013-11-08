@@ -32,14 +32,17 @@ class MovieParser extends Thread {
         JSONObject jsonMovie;
         for (int i = 0; i < jsonMovies.size(); i++) {
             jsonMovie = jsonMovies.get(i)
-
             // automatically finds and fills the fields by their names
             // hint: will have to construct map out of it for IMDB, for example,
             // if the fields are not the same <=> normalize
             Movie movie = new Movie(jsonMovie)
             movie.rottenTomatoId = jsonMovie?.get("id")
-            // these have to be explicit for some reason
-
+            if (jsonMovie.containsKey("alternate_ids")) {
+                JSONObject alternateIds = jsonMovie.get("alternate_ids") as JSONObject
+                if (alternateIds.containsKey("imdb"))
+                    movie.imdbId = "tt" + alternateIds.get("imdb")
+                // these have to be explicit for some reason
+            }
             movie.release_dates = Extras.formatHashMap(jsonMovie?.get("release_dates")?.toString())
             movie.posters = Extras.formatHashMap(jsonMovie?.get("posters")?.toString())
             movie.ratings = Extras.formatHashMap(jsonMovie?.get("ratings")?.toString())
@@ -50,7 +53,7 @@ class MovieParser extends Thread {
             movie.validate()
             if (!movie.hasErrors()) {
                 movie.save()
-               movies.add(movie)
+                movies.add(movie)
             }
         }
         latch.countDown();

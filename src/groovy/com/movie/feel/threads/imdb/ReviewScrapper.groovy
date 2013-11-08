@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch
  * Time: 3:36 PM
  * To change this template use File | Settings | File Templates.
  */
-class MovieScrapper extends Thread {
+class ReviewScraper extends Thread {
 
     CountDownLatch latch
     Movie movie
@@ -23,7 +23,7 @@ class MovieScrapper extends Thread {
     int maxReviews
     List<Review> reviews
 
-    public MovieScrapper(CountDownLatch latch,Movie movie,int startPosition, int maxReviews, List<Review> reviews) {
+    public ReviewScraper(CountDownLatch latch,Movie movie,int startPosition, int maxReviews, List<Review> reviews) {
         this.latch = latch
         this.movie = movie
         this.startPosition = startPosition
@@ -69,6 +69,7 @@ class MovieScrapper extends Thread {
             review.movie = movie
             review.validate()
             if (!review.hasErrors()) {
+                review.save()
                 reviewsList.add(review)
             }
 

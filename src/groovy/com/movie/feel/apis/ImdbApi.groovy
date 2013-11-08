@@ -6,6 +6,7 @@ import com.movie.feel.helpers.Constants
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
 import com.movie.feel.threads.imdb.MovieScrapper
+import com.movie.feel.threads.imdb.ReviewScraper
 import grails.converters.JSON
 import org.apache.http.HttpResponse
 import org.apache.http.client.methods.HttpGet
@@ -217,7 +218,7 @@ class ImdbApi implements MovieSitesApi_I {
             CountDownLatch latch = new CountDownLatch(numberOfThreads)
 
             for (int i = 0; i < reviewsNumber; i += halfReviews) {
-                Thread currentThread = new MovieScrapper(latch, movie, i, halfReviews,reviews)
+                Thread currentThread = new ReviewScraper(latch, movie, i, halfReviews,reviews)
                 currentThread.run()
             }
 

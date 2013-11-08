@@ -13,11 +13,17 @@ class RetrievalService {
         def urlTitle = Extras.formatTitle(title)
 
         def rottenTomatoMovies = rottenTomatoesApi.searchForMoviesByTitle(urlTitle)
-
+        if (rottenTomatoMovies.isEmpty()) {
+            rottenTomatoMovies = imdbApi.searchForMoviesByTitle(urlTitle)
+        } else {
+            if (rottenTomatoMovies.get(0).imdbId == null) {
+                // TODO: nu stiu sigur ce sa facem aici.
+            }
+        }
         return rottenTomatoMovies
     }
 
-    void dummyMovies(){
+    void dummyMovies() {
         rottenTomatoesApi.saveAllMoviesWithTitleLike("Toy Story")
         rottenTomatoesApi.saveAllMoviesWithTitleLike("Lord of the Rings")
         rottenTomatoesApi.saveAllMoviesWithTitleLike("Rocky")
@@ -98,8 +104,8 @@ class RetrievalService {
     List<Review> getReviewsForMovieImdbById(String id) {
         List<Review> ImdbReviews = null
 
-        Movie movie = Movie.list().find{
-            it.imdbId ==  /(?i).*${id}.*/
+        Movie movie = Movie.list().find {
+            it.imdbId == /(?i).*${id}.*/
         }
 
         // by convention, choose first in list, maybe implements something else to let the user decide which one to choose.

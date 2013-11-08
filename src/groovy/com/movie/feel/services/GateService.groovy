@@ -53,17 +53,17 @@ class GateService {
     /**
      * The ID of this handler instance.
      */
-    private int handlerId;
+    private static int handlerId;
 
     /**
      * The application that will be run.
      */
-    private Object application;
+    private static Object application;
 
     /**
      * A corpus that will be used to hold the document being processed.
      */
-    private Corpus corpus;
+    private static Corpus corpus;
 
     /**
      * Set the application that will be run over the documents.
@@ -72,11 +72,21 @@ class GateService {
         this.application = application;
     }
 
-    public GateService() {
+    private static GateService instance
+    public static GateService getInstance(){
+        if(instance == null){
+            instance = new GateService()
+            initGate()
+        }
+        return instance
+    }
+
+
+    private GateService() {
         isInitialized = false
     }
 
-    public void InitGate() {
+    private static initGate() {
         def realPath = grailsApplication.config.moviefeel.gateLocation
         Gate.pluginsHome = new File(realPath + "/gate-files/plugins")
 
@@ -112,9 +122,6 @@ class GateService {
 
     public String anotateReviews(Movie movie, List<Review> reviews)
     {
-        if(!isInitialized)
-            InitGate()
-
         String mime = "text/plain";
         List<Document> documents = new ArrayList<Document>()
         for (Review review : reviews)
@@ -140,7 +147,7 @@ class GateService {
             log.info("Application completed")
         }
         catch(ExecutionException e) {
-            return failureMessage("Error occurred which executing GATE application");
+            return failureMessage()
         }
         finally {
             // remember to do the clean-up tasks in a finally
@@ -176,7 +183,7 @@ class GateService {
 
     public String testGate(String text) {
         if(!isInitialized)
-            InitGate()
+            initGate()
 
         log.info("Handler " + handlerId + " handling request");
         // the form also allows you to provide a mime type
@@ -199,7 +206,7 @@ class GateService {
             log.info("Application completed");
         }
         catch(ExecutionException e) {
-            return failureMessage("Error occurred which executing GATE application");
+            return failureMessage();
         }
         finally {
             // remember to do the clean-up tasks in a finally
