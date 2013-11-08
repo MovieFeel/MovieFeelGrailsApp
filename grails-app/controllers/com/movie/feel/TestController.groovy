@@ -28,13 +28,18 @@ class TestController {
     }
 
     def gateTest(String inputGate) {
-        MovieRetrieverStage mrs = new MovieRetrieverStage()
-        mrs.startStage("tt0435761")
-        ReviewRetrieverStage rrs = new ReviewRetrieverStage()
-        rrs.startStage()
-        ReviewProcessingStage rps = new ReviewProcessingStage()
-        rps.startStage()
-        def outputGate = CurrentUserData.output
-        render view: "index", model: [ inputGate: inputGate, outputGate: outputGate]
+
+        def toyStoryMovies = retrievalService.searchForImdbMovie("Scary Movie 5")
+        def toyStoryReviews = retrievalService.getReviewsForMovieImdb("Scary Movie 5")
+        def movie = Movie.list().first()
+
+        //MovieRetrieverStage mrs = new MovieRetrieverStage()
+        //mrs.startStage("tt0435761")
+        //ReviewRetrieverStage rrs = new ReviewRetrieverStage()
+        //rrs.startStage()
+        //ReviewProcessingStage rps = new ReviewProcessingStage()
+        //rps.startStage()
+        //def outputGate = CurrentUserData.output
+        //render view: "index", model: [ inputGate: inputGate, outputGate: outputGate]
     }
 }

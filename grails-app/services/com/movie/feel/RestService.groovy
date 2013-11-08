@@ -4,11 +4,12 @@ import com.movie.feel.helpers.Extras
 import com.movie.feel.pipeline.PipelineWrapper
 import com.movie.feel.responses.InitialMovieDetails
 import com.movie.feel.responses.RatingsDetails
+import org.codehaus.groovy.grails.web.json.JSONArray
 import org.codehaus.groovy.grails.web.json.JSONObject
 
 /**
  * Created with IntelliJ IDEA.
- * User: Alex
+ * User: Darius
  * Date: 10/4/13
  * Time: 11:47 AM
  * To change this template use File | Settings | File Templates.
@@ -28,7 +29,7 @@ class RestService {
         if (movie != null) {
             return getDetailsForMovie(movie)
         } else {
-            def movies = retrievalService.searchForImdbMovie(title)
+            def movies = retrievalService.searchForMovie(title)
             if (!movies.isEmpty()) {
                 movie = movies.get(0)
                 return getDetailsForMovie(movie)
@@ -38,9 +39,13 @@ class RestService {
         }
     }
 
-    String getMovieRating(String title) {
+    RatingsDetails getMovieRating(String title) {
         def movie = Movie.findByTitle(title)
         if (movie != null) {
+            if(movie.processedRating != null)
+            {
+                return getRatingsForMovie(movie)
+            }
             PipelineWrapper p = new PipelineWrapper()
             p.auxGetReviewsForAllMovies(movie)
             return getRatingsForMovie(movie)
@@ -62,11 +67,13 @@ class RestService {
 
     private InitialMovieDetails getDetailsForMovie(Movie movie) {
         def initialMovieDetails = new InitialMovieDetails()
-        initialMovieDetails.synopsis = movie.synopsis
-        initialMovieDetails.critics_consensus = movie.critics_consensus
-        initialMovieDetails.mpaa_rating = movie.mpaa_rating
+        initialMovieDetails.synopsis = movie.synopsis == null ? movie.plot_simple : movie.synopsis
+        initialMovieDetails.mpaa_rating = movie.rating
         initialMovieDetails.ratings = new JSONObject(Extras.formatJSON(movie.ratings))
         initialMovieDetails.posters = new JSONObject(Extras.formatJSON(movie.posters))
+       // initialMovieDetails.actors = new JSONArray(movie.actors)
+        //initialMovieDetails.genres = new JSONArray(movie.genres)
+        //initialMovieDetails.directors = new JSONArray(movie.directors)
         return initialMovieDetails
     }
 

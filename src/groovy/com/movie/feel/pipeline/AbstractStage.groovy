@@ -11,7 +11,7 @@ import com.movie.feel.interfaces.observer.Subject_I
 
 /**
  * Created with IntelliJ IDEA.
- * User: Alex
+ * User: Darius
  * Date: 8/28/13
  * Time: 12:15 PM
  * To change this template use File | Settings | File Templates.

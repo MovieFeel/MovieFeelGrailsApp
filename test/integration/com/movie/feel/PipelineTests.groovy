@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue
 
 /**
  * Created with IntelliJ IDEA.
- * User: Alex
+ * User: Darius
  * Date: 8/27/13
  * Time: 10:31 PM
  * To change this template use File | Settings | File Templates.
@@ -33,9 +33,6 @@ class PipelineTests {
         // Tear down logic here
     }
 
-    /**
-     * TODO: delete after implementing everything
-     */
     @Ignore
     void testPipelineStageTransition() {
 

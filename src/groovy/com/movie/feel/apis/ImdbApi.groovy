@@ -3,6 +3,7 @@ package com.movie.feel.apis
 import com.movie.feel.Movie
 import com.movie.feel.Review
 import com.movie.feel.helpers.Constants
+import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.MovieSitesApi_I
 import com.movie.feel.threads.imdb.MovieScrapper
 import grails.converters.JSON
@@ -21,7 +22,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Alex
+ * User: Darius
  * Date: 8/13/13
  * Time: 4:09 PM
  * To change this template use File | Settings | File Templates.
@@ -78,6 +79,13 @@ class ImdbApi implements MovieSitesApi_I {
         String URL = "http://mymovieapi.com/?title=" + title + "&plot=" + plotType + "&limit=" + pageLimit
         List<Movie> movies = new ArrayList<Movie>()
 
+        List<String> keys = new ArrayList<String>();
+        keys.add("imdb_id")
+        keys.add("title")
+        keys.add("rating")
+        keys.add("plot_simple")
+        keys.add("year")
+
         // this will contain an array list of json elements
         def jsonMovies = (JSONArray) doRequest(URL)
 
@@ -88,34 +96,40 @@ class ImdbApi implements MovieSitesApi_I {
             String mTitle = jsonMovie.title
             Movie m = Movie.findByTitle(mTitle)
 
-            // movie already exists
             if (m != null) {
-
-                // just grab the id
                 m.imdbId = jsonMovie.imdb_id
-
             } else {
-                // set the "alreay the same name" variables
+
                 m = new Movie(jsonMovie)
                 def map = constructMap()
                 for (def jsonElement : jsonMovie)
                     if (map.containsKey(jsonElement.getKey())) {
-                        if (!jsonElement.getKey().equals("rating") && !jsonElement.getKey().equals("runtime"))
+                        if (keys.contains(jsonElement.getKey()))
                             m.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
-                        else {
+                        else if (jsonElement.getKey().equals("ratings")) {
                             // treat the rating in a special way
                             HashMap<String, String> ratings = new HashMap<String, String>()
-                            ratings.put("critics_rating", "")
-                            ratings.put("critics_score", "")
-                            ratings.put("audience_rating", "")
                             ratings.put("audience_score", (Double.parseDouble(jsonElement.getValue().toString()) * 10).toString())
                             m.ratings = ratings.toString()
-
+                        }
+                        else if (jsonElement.getKey().equals("actors"))
+                        {
+                          //  m.actors = Extras.formatJSON(jsonElement.getValue().toString())
+                        }
+                        else if (jsonElement.getKey().equals("poster"))
+                        {
+                            m.posters = jsonElement.getValue().toString()
+                        }
+                        else if (jsonElement.getKey().equals("genres"))
+                        {
+                           // m.genres = Extras.formatJSON(jsonElement.getValue().toString())
+                        }
+                        else if (jsonElement.getKey().equals("directors"))
+                        {
+                            //m.directors = Extras.formatJSON(jsonElement.getValue().toString())
                         }
                     }
             }
-
-            // can someone explain why I have to do this?
             m.validate()
             if (m.validate()) {
                 m.save()
@@ -134,6 +148,13 @@ class ImdbApi implements MovieSitesApi_I {
         String mTitle = jsonMovie.title
         Movie movie = Movie.findByTitle(mTitle)
 
+        List<String> keys = new ArrayList<String>();
+        keys.add("imdb_id")
+        keys.add("title")
+        keys.add("rating")
+        keys.add("plot_simple")
+        keys.add("year")
+
         // movie already exists
         if (movie != null) {
 
@@ -146,17 +167,29 @@ class ImdbApi implements MovieSitesApi_I {
             def map = constructMap()
             for (def jsonElement : jsonMovie)
                 if (map.containsKey(jsonElement.getKey())) {
-                    if (!jsonElement.getKey().equals("rating") && !jsonElement.getKey().equals("runtime"))
-                        movie.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
-                    else {
+                    if (keys.contains(jsonElement.getKey()))
+                        m.setProperty(map.get(jsonElement.getKey()), jsonElement.getValue())
+                    else if (jsonElement.getKey().equals("ratings")) {
                         // treat the rating in a special way
                         HashMap<String, String> ratings = new HashMap<String, String>()
-                        ratings.put("critics_rating", "")
-                        ratings.put("critics_score", "")
-                        ratings.put("audience_rating", "")
                         ratings.put("audience_score", (Double.parseDouble(jsonElement.getValue().toString()) * 10).toString())
-                        movie.ratings = ratings.toString()
-
+                        m.ratings = ratings.toString()
+                    }
+                    else if (jsonElement.getKey().equals("actors"))
+                    {
+                        //  m.actors = Extras.formatJSON(jsonElement.getValue().toString())
+                    }
+                    else if (jsonElement.getKey().equals("poster"))
+                    {
+                        m.posters = jsonElement.getValue().toString()
+                    }
+                    else if (jsonElement.getKey().equals("genres"))
+                    {
+                        // m.genres = Extras.formatJSON(jsonElement.getValue().toString())
+                    }
+                    else if (jsonElement.getKey().equals("directors"))
+                    {
+                        //m.directors = Extras.formatJSON(jsonElement.getValue().toString())
                     }
                 }
 
@@ -167,9 +200,6 @@ class ImdbApi implements MovieSitesApi_I {
 
         return movie
     }
-
-
-    //TODO Find the optimal number of threads(Darius)
 
     List<Review> getReviewsForMovie(Movie movie) {
         def reviewsNumber = getReviewsNumberUsingScrapping(movie)
@@ -200,7 +230,6 @@ class ImdbApi implements MovieSitesApi_I {
         return reviews
     }
 
-    //TODO: Make the dude include it in the api
     int getReviewsNumberUsingScrapping(Movie movie) {
         println movie.imdbId
         String url = "http://www.imdb.com/title/" + movie.imdbId
@@ -235,8 +264,10 @@ class ImdbApi implements MovieSitesApi_I {
         map.put("rated", "mpaa_rating")
         map.put("rating", "ratings")
         map.put("plot", "synopsis")
-        map.put("runtime", "extendedRuntimes")
-
+       // map.put("actors", "actors")
+        map.put("poster", "poster")
+        //map.put("directors", "directors")
+        //map.put("genres", "genres")
         return map
     }
 

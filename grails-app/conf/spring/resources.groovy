@@ -21,4 +21,8 @@ beans = {
         fileExportService = ref('fileExportService')
     }
 
+    pipelineWrapper(com.movie.feel.pipeline.PipelineWrapper) {
+        fileExportService = ref('fileExportService')
+    }
+
 }

@@ -36,18 +36,19 @@ class GateService {
     private static final Logger log = Logger.getLogger(GateService.class);
 
     class ratingElements {
-        public int rating;
-        public int anger;
-        public int joy;
-        public int surprise;
-        public int disgust;
-    };
+        public int rating
+        public int anger
+        public int joy
+        public int fear
+        public int surprise
+        public int disgust
+    }
 
     /**
      * Atomic counter that we use to obtain a unique ID for each handler
      * instance.
      */
-    private static AtomicInteger nextId = new AtomicInteger(1);
+    private static AtomicInteger nextId = new AtomicInteger(1)
 
     /**
      * The ID of this handler instance.
@@ -254,6 +255,7 @@ class GateService {
                 ratingElements.anger = annotationAnger as int
                 ratingElements.disgust = annotationDisgust as int
                 ratingElements.joy = annotationJoy as int
+                ratingElements.fear = annotationFear as int
                 ratingElements.surprise = annotationSurprise as int
                 reviews.add(ratingElements)
             }
@@ -264,6 +266,8 @@ class GateService {
         def totalDisgust = 0
         def totalSurprise = 0
         def totalJoy = 0
+        def totalFear = 0
+
         reviews.each
         {
             totalRating+= it.rating
@@ -271,10 +275,12 @@ class GateService {
             totalDisgust+= it.disgust
             totalSurprise+= it.surprise
             totalJoy+= it.joy
+            totalFear+= it.fear
         }
 
         movie.angerRating = (totalAnger / reviews.size()).toString()
         movie.joyRating = (totalJoy / reviews.size()).toString()
+        movie.fearRating = (totalFear / reviews.size()).toString()
         movie.disgustRating = (totalDisgust / reviews.size()).toString()
         movie.surpriseRating = (totalSurprise / reviews.size()).toString()
         movie.processedRating = (totalRating / reviews.size()).toString()

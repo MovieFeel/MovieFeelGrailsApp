@@ -9,10 +9,11 @@ import com.movie.feel.helpers.CurrentUserData
 import com.movie.feel.helpers.Extras
 import com.movie.feel.interfaces.observer.Observer_I
 import com.movie.feel.interfaces.observer.Subject_I
+import com.movie.feel.services.GateService
 
 /**
  * Created with IntelliJ IDEA.
- * User: Alex
+ * User: Darius
  * Date: 8/28/13
  * Time: 12:14 PM
  * To change this template use File | Settings | File Templates.
@@ -21,6 +22,7 @@ class PipelineWrapper implements Observer_I {
 
     PipelineWrapper() {
         this.state = Constants.STATE_IDLE
+        gate = new GateService()
     }
 
     private static HashMap<String, AbstractStage> stages
@@ -37,15 +39,17 @@ class PipelineWrapper implements Observer_I {
     String state
     String status
     def notificationService
-    def fileExportService
+    def static fileExportService
     String title
+
+    GateService gate
 
     public void auxGetReviewsForAllMovies(Movie movie) {
         def imdbReviews = ImdbApi.getInstance().getReviewsForMovie(movie)
         def rottenTomatoesReviews = RottenTomatoesApi.getInstance().getReviewsForMovie(movie)
 
         def reviews = Extras.synchronizeLists(imdbReviews, rottenTomatoesReviews)
-        fileExportService.exportReviewsToFiles(movie)
+        gate.anotateReviews(movie, reviews)
     }
 
 
@@ -161,8 +165,6 @@ class PipelineWrapper implements Observer_I {
     void update(Subject_I o) {
         status = o.getStatus()
         println("Status changed to: " + status)
-
-        // TODO: do something! a stage has signaled its completion
 
         if (status == Constants.STATUS_SEARCH_STAGE_PROCESS_MOVIE) {
             state = Constants.STAGE_MOVIE_RET

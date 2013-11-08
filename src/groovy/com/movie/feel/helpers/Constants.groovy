@@ -2,7 +2,7 @@ package com.movie.feel.helpers
 
 /**
  * Created with IntelliJ IDEA.
- * User: alexcosma
+ * User: Darius
  * Date: 26.07.13
  * Time: 12:15
  * To change this template use File | Settings | File Templates.
@@ -37,7 +37,7 @@ class Constants {
     public static final String STAGE_MOVIE_RET = "PIPELINE_STAGE_MOVIE_RET"
     public static final String STAGE_REVIEW_RET = "PIPELINE_STAGE_REVIEW_RET"
     public static final String STAGE_REVIEW_PROC = "PIPELINE_STAGE_REVIEW_PROC"
-    //TODO lock the access to the database ? or sincronize somehow
+
     public static final String STAGE_REVIEW_WRITE = "PIPELINE_STAGE_REVIEW_WRITE"
     public static final String STAGE_REVIEW_RESPONSE = "PIPELINE_STAGE_REVIEW_RESPONSE"
 

@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 
 /**
  * Created with IntelliJ IDEA.
- * User: alexcosma
+ * User: Darius
  * Date: 26.07.13
  * Time: 11:11
  * To change this template use File | Settings | File Templates.

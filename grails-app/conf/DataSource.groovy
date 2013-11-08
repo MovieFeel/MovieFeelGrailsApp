@@ -65,7 +65,7 @@ environments {
             mongo {
                 host = "localhost"
                 port = 27017
-                databaseName = "moviefeel-test"
+                databaseName = "moviefeel-dev"
             }
         }
     }

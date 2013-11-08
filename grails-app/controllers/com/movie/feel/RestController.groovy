@@ -20,6 +20,6 @@ class RestController {
     }
 
     def getMovieRating(String title) {
-        render restService.getMovieRating(title)
+        render restService.getMovieRating(title) as JSON
     }
 }
